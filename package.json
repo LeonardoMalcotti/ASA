@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Autonomous agent implementation",
   "main": "main.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,6 +19,7 @@
   "homepage": "https://github.com/LeonardoMalcotti/ASA#readme",
   "dependencies": {
     "@unitn-asa/deliveroo-js-client": "^0.0.34",
-    "@unitn-asa/pddl-client": "^0.0.29"
+    "@unitn-asa/pddl-client": "^0.0.29",
+    "heap-js": "^2.3.0"
   }
 }
