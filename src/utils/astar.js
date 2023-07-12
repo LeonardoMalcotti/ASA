@@ -1,3 +1,5 @@
+import {aNode} from "./Types.js";
+
 /**
  * @param {aNode} node
  * @param {TileMap} map
@@ -5,9 +7,8 @@
  */
 function get_aNode_neighbors(node, map, a_map) {
     const neigh = map.neighbors(node.tile);
-
     return a_map.filter((a) => {
-        return a.tile in neigh;
+        return neigh.find((t) => t === a.tile);
     });
 }
 
@@ -19,26 +20,25 @@ function get_aNode_neighbors(node, map, a_map) {
  * @param h
  * @returns {Tile[]}
  */
-export async function astar(map,start,goal,h){
+export async function astar(map,start,goal,heuristic){
 
 
     const NodeMap = map.tiles.map((t) => {
         const g = (start === t) ? 0 : Number.MAX_VALUE;
-        const h = h(t,goal);
+        const h = heuristic(t,goal);
         const f = g + h;
         return new aNode(t, g, h, f, undefined);
     })
 
     const comparator = (a, b) => a.f - b.f;
 
-    const open = [ new aNode(start, 0, h(start,goal), h(start,goal),undefined) ]
+    const open = [ new aNode(start, 0, heuristic(start,goal), heuristic(start,goal),undefined) ]
 
     const closed = [];
 
 
-    while(open.size() > 0){
+    while(open.length > 0){
         let current = open.sort(comparator)[0];
-
         if(current.h === 0){
             let temp = current;
             let path = [];
@@ -54,15 +54,17 @@ export async function astar(map,start,goal,h){
         open.splice(0,1);
 
         for (let neighbor of get_aNode_neighbors(current, map, NodeMap)){
-
+            //console.log(neighbor)
             let possible_g = current.g + 1;
-            let possible_h = h(neighbor.tile,goal);
+            let possible_h = heuristic(neighbor.tile,goal);
 
-            if(! neighbor in closed){
+            // if the node has not been visited yet
+            if(!closed.find((node) => node.tile === neighbor.tile)){
 
+                // if it isn't even in the open list add it
                 let i = open.findIndex((t) => t.tile === neighbor.tile);
-
                 if(i === -1){
+                    neighbor.parent = current;
                     open.push(neighbor)
                 } else if (possible_g < neighbor.g) {
 
@@ -77,4 +79,6 @@ export async function astar(map,start,goal,h){
             }
         }
     }
+
+    return [];
 }
