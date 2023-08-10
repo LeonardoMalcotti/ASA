@@ -1,51 +1,118 @@
+/**
+ * @typedef {Object} ParcelData
+ * @property {string} id
+ * @property {number} x
+ * @property {number} y
+ * @property {?string} carriedBy
+ * @property {number} reward
+ */
 
-export class TileMap {
-    /**
-     * @type {Tile[]}
-     */
-    tiles;
+/**
+ * @typedef {Object} AgentData
+ * @property {string} id
+ * @property {string} name
+ * @property {number} x
+ * @property {number} y
+ * @property {number} score
+ */
 
-    constructor() {
-        this.tiles = [];
-    }
+/**
+ * @typedef {Object} TileData
+ * @property {number} x
+ * @property {number} y
+ * @property {boolean} delivery
+ */
 
-    /**
-     * @param {Tile} tile
-     */
-    add(tile){
-        this.tiles.push(tile);
-    }
+/**
+ * @typedef {Object} Configurations
+ * @property {string} MAP_FILE
+ * @property {string} PARCELS_GENERATION_INTERVAL
+ * @property {string} PARCELS_MAX
+ * @property {string} MOVEMENT_STEPS
+ * @property {string} MOVEMENT_DURATION
+ * @property {string} AGENTS_OBSERVATION_DISTANCE
+ * @property {string} PARCELS_OBSERVATION_DISTANCE
+ * @property {string} AGENT_TIMEOUT
+ * @property {string} PARCEL_REWARD_AVG
+ * @property {string} PARCEL_REWARD_VARIANCE
+ * @property {string} PARCEL_DECADING_INTERVAL
+ * @property {string} RANDOMLY_MOVING_AGENTS
+ * @property {string} RANDOM_AGENT_SPEED
+ * @property {string} CLOCK
+ */
 
-    /**
-     * @param {Tile} tile
-     */
-    neighbors(tile){
-        return this.tiles.filter((t) => (
-            t.x === tile.x && t.y + 1 === tile.y ||
-            t.x === tile.x && t.y - 1 === tile.y ||
-            t.x + 1 === tile.x && t.y === tile.y ||
-            t.x - 1 === tile.x && t.y === tile.y
-        ))
-    }
-}
+/**
+ * @callback OptionsGeneration
+ * @param {BeliefSet} beliefs
+ * @param {Intention} currentIntention
+ * @return {DesireSet}
+ */
 
-export class Tile {
-    x;
-    y;
-    destination;
+/**
+ * @callback OptionsFiltering
+ * @param {BeliefSet} beliefs
+ * @param {Intention} currentIntention
+ * @param {DesireSet} desires
+ * @return {DesireSet}
+ */
 
-    /**
-     *
-     * @param {number} x
-     * @param {number} y
-     * @param {boolean} destination
-     */
-    constructor(x,y, destination) {
-        this.x = x;
-        this.y = y;
-        this.destination = destination;
-    }
-}
+/**
+ * @callback Deliberate
+ * @param {BeliefSet} beliefs
+ * @param {Intention} currentIntention
+ * @param {DesireSet} desires
+ * @return {Intention}
+ */
+
+/**
+ * @callback IntentionRevisionCompletion
+ * @param {Intention} newIntention
+ * @return {void}
+ */
+
+/**
+ * @callback IntentionRevision
+ * @param {BeliefSet} beliefs
+ * @param {Intention} currentIntention
+ * @param {IntentionRevisionCompletion} completion
+ * @return {void}
+ */
+
+/**
+ * @callback OnMapCallback
+ * @param {number} width
+ * @param {number} height
+ * @param {TileData[]} tiles
+ * @param {BeliefSet} beliefs
+ * @return {Promise<void>}
+ */
+
+/**
+ * @callback OnAgentCallback
+ * @param {AgentData[]} agents
+ * @param {BeliefSet} beliefs
+ * @return {Promise<void>}
+ */
+
+/**
+ * @callback OnParcelCallback
+ * @param {ParcelData[]} parcels
+ * @param {BeliefSet} beliefs
+ * @param {IntentionRevisionCallback} reviseIntention
+ * @return {Promise<void>}
+ */
+
+/**
+ * @callback OnYouCallback
+ * @param {AgentData} you
+ * @param {BeliefSet} beliefs
+ * @return {Promise<void>}
+ */
+
+/**
+ * @callback IntentionRevisionCallback
+ * @return {void}
+ */
 
 export class aNode {
     tile;

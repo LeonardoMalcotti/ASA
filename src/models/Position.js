@@ -1,4 +1,4 @@
-class Position {
+export default class Position {
     /**
      * @param {number} x
      * @param {number} y
@@ -9,4 +9,12 @@ class Position {
     }
 }
 
-export default Position;
+/**
+ *
+ * @param {number} x
+ * @param {number} y
+ * @return {Position}
+ */
+export function roundedPosition(x,y){
+    return new Position(Math.round(x), Math.round(y));
+}

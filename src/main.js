@@ -1,7 +1,6 @@
-import {DeliverooApi, timer} from "@unitn-asa/deliveroo-js-client";
+import {DeliverooApi} from "@unitn-asa/deliveroo-js-client";
 import config from "../config.js";
 import {astar} from "./utils/astar.js";
-import {Tile, TileMap} from "./utils/Types.js";
 
 const client = new DeliverooApi( config.host, config.token );
 
@@ -59,6 +58,8 @@ client.onYou(async (vals) => {
 
     }
 })
+
+client.onParcelsSensing(async function(params))
 
 function heuristic(start, end) {
     const dx = Math.abs( Math.round(start.x) - Math.round(end.x) )

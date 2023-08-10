@@ -1,15 +1,15 @@
 
 ## Requirements
 
-- [ ] Environment Sensing
-    - [ ] Store map values
-    - [ ] Detect other agents
-    - [ ] Detect parcels
-- [ ] Beliefs Revision
-    - [ ] Update belief correctly
-    - [ ] Error management
-        - [ ] Correct positional error on agents
-        - [ ] Apply probability model
+- [x] Environment Sensing
+    - [x] Store map values
+    - [x] Detect other agents
+    - [x] Detect parcels
+- [x] Beliefs Revision
+    - [x] Update belief correctly
+    - [x] Error management
+        - [x] Correct positional error on agents
+        - [x] Apply probability model
     - [ ] Model other agent intentions
 - [ ] Intention generation
   - [ ] Option generation

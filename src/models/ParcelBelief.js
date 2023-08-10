@@ -1,4 +1,6 @@
-class ParcelBelief {
+import Position from "./Position.js";
+
+export default class ParcelBelief {
      /**
      * @param {string} id
      * @param {Position} position
@@ -17,6 +19,12 @@ class ParcelBelief {
         this.time = time;
         this.probability = probability;
     }
-}
 
-export default ParcelBelief;
+    /**
+     * @param {ParcelData} data
+     * @return ParcelBelief
+     */
+    static fromParcelData(data) {
+        return new ParcelBelief(data.id, new Position(data.x,data.y),data.carriedBy === null ? "" : data.carriedBy,data.reward,null, Date.now(), 1);
+    }
+}

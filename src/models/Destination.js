@@ -1,4 +1,4 @@
-class Destination{
+export default class Destination{
     /**
      * @param {Position} position
      * @param {number} distance
@@ -9,4 +9,3 @@ class Destination{
     }
 }
 
-export default Destination;
