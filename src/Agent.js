@@ -40,7 +40,14 @@ class Agent {
     }
 
     intentionRevisionCallback() {
-        this.#intentionRevision(this.#beliefSet,this.#currentIntention,this.changePlan);
+        this.#intentionRevision(
+            this.#beliefSet,
+            this.#currentIntention,
+            this.#optionsGeneration,
+            this.#optionsFiltering,
+            this.#deliberate,
+            this.changePlan
+        );
     }
 
     /**
@@ -63,6 +70,7 @@ class Agent {
                 intentionRevision,
                 planner,
                 executor) {
+
         this.#apiClient = new DeliverooApi( config.host, config.token );
         this.#beliefSet = new BeliefSet();
         this.#currentIntention = new Explore();
@@ -78,9 +86,18 @@ class Agent {
 
         this.#apiClient.onYou((you) => this.#beliefSet.me = you);
         this.#apiClient.onConfig((config) => this.#beliefSet.config = config);
-        this.#apiClient.onMap((width,height,tiles) => this.#onMapCallback(width,height,tiles,this.#beliefSet));
-        this.#apiClient.onParcelsSensing((parcels) => this.#onParcelCallback(parcels,this.#beliefSet,this.intentionRevisionCallback));
-        this.#apiClient.onAgentsSensing((agents) => this.#onAgentCallback(agents,this.#beliefSet));
+
+        this.#apiClient.onMap((width,height,tiles) =>
+            this.#onMapCallback(width, height, tiles, this.#beliefSet)
+        );
+
+        this.#apiClient.onParcelsSensing((parcels) =>
+            this.#onParcelCallback(parcels,this.#beliefSet,this.intentionRevisionCallback)
+        );
+
+        this.#apiClient.onAgentsSensing((agents) =>
+            this.#onAgentCallback(agents,this.#beliefSet)
+        );
 
         this.changePlan();
     }

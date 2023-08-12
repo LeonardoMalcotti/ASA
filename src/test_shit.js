@@ -67,3 +67,57 @@ let to_be_modified = array_of_something_else.find((e) => {
 to_be_modified.val = "modified!"
 
 console.log(array_of_something_else);
+
+
+class Father {
+    val;
+
+    /**
+     *
+     * @param {string} v
+     */
+    constructor(v) {
+        this.val = v;
+    }
+}
+
+class Child extends Father {
+    n_v;
+
+    /**
+     *
+     * @param {string} v
+     * @param {string} n_v
+     */
+    constructor(v, n_v) {
+        super(v);
+        this.n_v = n_v;
+    }
+}
+
+class OtherChild extends Father {
+    n_v;
+
+    /**
+     *
+     * @param {string} v
+     * @param {string} n_v
+     */
+    constructor(v, n_v) {
+        super(v);
+        this.n_v = n_v;
+    }
+}
+
+
+let vvv = new Child("father_value", "child_value");
+
+/**
+ *
+ * @param {Father} v
+ */
+function inst(v){
+    console.log(v instanceof OtherChild);
+}
+
+inst(vvv)

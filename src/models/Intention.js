@@ -46,7 +46,7 @@ export class ComplexIntention extends Intention{
  * @class Explore
  * @extends BasicIntention
  */
-export class Explore extends BasicIntention {
+export class DefaultIntention extends Intention {
 
 }
 

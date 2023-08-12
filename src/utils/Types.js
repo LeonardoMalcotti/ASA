@@ -74,6 +74,9 @@
  * @callback IntentionRevision
  * @param {BeliefSet} beliefs
  * @param {Intention} currentIntention
+ * @param {OptionsGeneration} optionsGeneration
+ * @param {OptionsFiltering} optionsFiltering
+ * @param {Deliberate} deliberate
  * @param {IntentionRevisionCompletion} completion
  * @return {void}
  */
