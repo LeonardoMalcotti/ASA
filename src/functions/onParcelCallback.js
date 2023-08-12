@@ -1,5 +1,5 @@
-import {roundedPosition} from "../models/Position.js";
-import ParcelBelief from "../models/ParcelBelief.js";
+import {roundedPosition} from "../classes/Position.js";
+import ParcelBelief from "../classes/ParcelBelief.js";
 
 
 const PARCEL_PROBABILITY_DECAY = 0.05;

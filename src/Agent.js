@@ -1,5 +1,5 @@
-import BeliefSet from "./Beliefs/BeliefSet.js";
-import {Explore} from "./models/Intention.js";
+import BeliefSet from "./classes/BeliefSet.js";
+import {Explore} from "./intentions/Intention.js";
 import {DeliverooApi} from "@unitn-asa/deliveroo-js-client";
 import config from "../config.js";
 

@@ -1,3 +1,7 @@
+/**
+ * @property {number} x
+ * @property {number} y
+ */
 export default class Position {
     /**
      * @param {number} x

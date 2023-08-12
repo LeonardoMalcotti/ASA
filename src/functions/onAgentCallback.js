@@ -1,5 +1,5 @@
-import {roundedPosition} from "../models/Position.js";
-import AgentBelief from "../models/AgentBelief.js";
+import {roundedPosition} from "../classes/Position.js";
+import AgentBelief from "../classes/AgentBelief.js";
 
 /**
  * @param {AgentData[]} agents

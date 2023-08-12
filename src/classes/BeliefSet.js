@@ -1,4 +1,4 @@
-import {TileMap} from "../models/TileMap.js";
+import {TileMap} from "./TileMap.js";
 
 export default class BeliefSet {
 

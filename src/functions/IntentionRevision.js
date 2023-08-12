@@ -1,4 +1,4 @@
-import {DefaultIntention} from "../models/Intention.js";
+import {DefaultIntention} from "../intentions/Intention.js";
 
 /**
  * @param {BeliefSet} beliefs
@@ -27,7 +27,6 @@ export function intentionRevision_simple(beliefs,
 		// check existence of a better option
 	}
 }
-
 /**
  *
  * @param {Intention} intention
