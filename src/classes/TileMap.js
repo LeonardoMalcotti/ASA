@@ -5,8 +5,14 @@ export class TileMap {
      */
     tiles;
 
+    /**
+     * @type {Tile[]}
+     */
+    delivery_tiles;
+
     constructor() {
         this.tiles = [];
+        this.delivery_tiles = [];
     }
 
     /**
@@ -14,6 +20,10 @@ export class TileMap {
      */
     add(tile){
         this.tiles.push(tile);
+
+        if(tile.destination){
+            this.delivery_tiles.push(tile);
+        }
     }
 
     /**

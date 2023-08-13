@@ -1,6 +1,46 @@
 import Position from "./Position.js";
 
+/**
+ * Represent the current belief about a single parcel.
+ * @property {string} id the unique identifier of the parcel.
+ * @property {Position} position the current believed coordinate on the map of the parcel.
+ * @property {string} held_by the id of the agent holding the parcel, empty string if there is no one.
+ * @property {number} reward the current believed reward of the parcel.
+ * @property {Destination} nearest_destination to be removed i guess.
+ * @property {number} time the last time the belief has been updated.
+ * @property {number} probability the probability that the belief is actually true.
+ */
 export default class ParcelBelief {
+
+    /** the unique identifier of the parcel.
+     * @type {string}
+     */
+    id;
+    /** the current believed coordinate on the map of the parcel.
+     * @type {Position}
+     */
+    position;
+    /** the id of the agent holding the parcel, empty string if there is no one.
+     * @type {string}
+     */
+    held_by;
+    /** the current believed reward of the parcel.
+     * @type {number}
+     */
+    reward;
+    /** to be removed i guess.
+     * @type {Destination}
+     */
+    nearest_destination;
+    /** the last time the belief has been updated.
+     * @type {number}
+     */
+    time;
+    /** the probability that the belief is actually true.
+     * @type {number}
+     */
+    probability;
+
      /**
      * @param {string} id
      * @param {Position} position

@@ -1,5 +1,6 @@
 import {roundedPosition} from "../classes/Position.js";
 import ParcelBelief from "../classes/ParcelBelief.js";
+import {remove_from_list} from "../utils/Utils.js";
 
 
 const PARCEL_PROBABILITY_DECAY = 0.05;
@@ -25,7 +26,7 @@ export async function onParcelCallback_simple(parcels, beliefs, reviseIntention)
             existing_belief.probability = 1;
             existing_belief.time = Date.now();
 
-            parcels.splice(parcels.indexOf(new_data),1);
+            remove_from_list(parcels,new_data);
         } else {
             // infer parcel belief
 

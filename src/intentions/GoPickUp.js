@@ -5,7 +5,13 @@ import {Intention} from "./Intention.js";
  * @property {Position} postition the position on the map to reach.
  */
 export default class GoPickUp extends Intention{
+	/** the id of the parcel to pickup.
+	 *  @type {string}
+	 */
 	parcel_id;
+	/** the position on the map to reach.
+	 *  @type {Position}
+	 */
 	position;
 
 	/**

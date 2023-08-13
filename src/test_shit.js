@@ -1,3 +1,4 @@
+import {remove_from_list} from "./utils/Utils.js";
 
 class somethingElse {
     val;
@@ -121,3 +122,43 @@ function inst(v){
 }
 
 inst(vvv)
+
+
+class someObj {
+    val;
+
+    /**
+     *
+     * @param {number} val
+     */
+    constructor(val) {
+        this.val = val;
+    }
+
+    write(){
+        console.log(this.val);
+    }
+}
+
+/**
+ *
+ * @param {someObj[]} l
+ */
+function writeAll(l){
+    for(let ll of l){
+        ll.write();
+    }
+}
+
+
+let lll = [
+    new someObj(1),
+    new someObj(2),
+    new someObj(3),
+    new someObj(4),
+    new someObj(5)
+];
+
+writeAll(lll);
+remove_from_list(lll, lll[2]);
+writeAll(lll);
