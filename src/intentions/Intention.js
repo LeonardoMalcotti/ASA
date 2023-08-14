@@ -7,4 +7,12 @@ export class Intention {
 
     }
 
+    /**
+     *
+     * @param {BeliefSet} beliefs
+     * @return {boolean}
+     */
+    achievable(beliefs){
+        return false;
+    }
 }

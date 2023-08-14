@@ -1,4 +1,5 @@
 import {TileMap} from "./TileMap.js";
+import Position from "./Position.js";
 
 export default class BeliefSet {
 
@@ -21,6 +22,21 @@ export default class BeliefSet {
     }
 
     /**
+     * @param {string} id the id of the parcel to get.
+     * @return {ParcelBelief}
+     */
+    getParcelBelief(id) {
+        return this.parcelBeliefs.find((p) => p.id === id);
+    }
+
+    /**
+     * @param {string} id the id of the agent to get.
+     */
+    getAgentBelief(id) {
+        return this.agentBeliefs.find((a) => a.id === id);
+    }
+
+    /**
      * @method
      * @param {ParcelBelief} parcel
      */
@@ -34,5 +50,12 @@ export default class BeliefSet {
      */
     deleteAgentBelief(agent){
         this.agentBeliefs.splice(this.agentBeliefs.indexOf(agent),1);
+    }
+
+    /**
+     * @return {Position}
+     */
+    my_position(){
+        return new Position(this.me.x,this.me.y);
     }
 }

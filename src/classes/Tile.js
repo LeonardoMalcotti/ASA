@@ -11,7 +11,7 @@ export class Tile {
      * @param {number} y
      * @param {boolean} destination
      */
-    constructor(x,y, destination) {
+    constructor(x,y, destination = false) {
         this.x = x;
         this.y = y;
         this.destination = destination;
@@ -22,5 +22,13 @@ export class Tile {
      */
     toPosition() {
         return new Position(this.x,this.y);
+    }
+
+    /**
+     * @param {Position} position
+     * @return {Tile}
+     */
+    static fromPosition(position){
+        return new Tile(position.x,position.y);
     }
 }

@@ -67,4 +67,25 @@ export default class ParcelBelief {
     static fromParcelData(data) {
         return new ParcelBelief(data.id, new Position(data.x,data.y),data.carriedBy === null ? "" : data.carriedBy,data.reward,null, Date.now(), 1);
     }
+
+    /**
+     * Give the reward of this parcel after the agent has traveled the given number of steps.
+     * @param {BeliefSet} beliefs
+     * @param {number} steps
+     * @return {number}
+     */
+    reward_after_n_steps(beliefs, steps) {
+        let decay_interval = beliefs.config.PARCEL_DECADING_INTERVAL;
+        let movement_speed = beliefs.config.MOVEMENT_DURATION;
+        let movement_steps = beliefs.config.MOVEMENT_STEPS;
+
+        let seconds = (steps / movement_steps) * (1/movement_speed)
+        switch (decay_interval) {
+            case "1s": return this.reward - Math.round(seconds);
+            case "2s": return this.reward - Math.round(seconds/2);
+            case "5s": return this.reward - Math.round(seconds/5);
+            case "10s": return this.reward - Math.round(seconds/10);
+            case "infinite": return this.reward;
+        }
+    }
 }

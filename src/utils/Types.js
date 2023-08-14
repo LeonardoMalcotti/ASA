@@ -27,18 +27,18 @@
  * @typedef {Object} Configurations
  * @property {string} MAP_FILE
  * @property {string} PARCELS_GENERATION_INTERVAL
- * @property {string} PARCELS_MAX
- * @property {string} MOVEMENT_STEPS
- * @property {string} MOVEMENT_DURATION
- * @property {string} AGENTS_OBSERVATION_DISTANCE
- * @property {string} PARCELS_OBSERVATION_DISTANCE
- * @property {string} AGENT_TIMEOUT
- * @property {string} PARCEL_REWARD_AVG
- * @property {string} PARCEL_REWARD_VARIANCE
- * @property {string} PARCEL_DECADING_INTERVAL
- * @property {string} RANDOMLY_MOVING_AGENTS
+ * @property {number} PARCELS_MAX
+ * @property {number} MOVEMENT_STEPS
+ * @property {number} MOVEMENT_DURATION
+ * @property {number} AGENTS_OBSERVATION_DISTANCE
+ * @property {number} PARCELS_OBSERVATION_DISTANCE
+ * @property {number} AGENT_TIMEOUT
+ * @property {number} PARCEL_REWARD_AVG
+ * @property {number} PARCEL_REWARD_VARIANCE
+ * @property {('1s' | '2s' | '5s' | '10s' | 'infinite')} PARCEL_DECADING_INTERVAL
+ * @property {number} RANDOMLY_MOVING_AGENTS
  * @property {string} RANDOM_AGENT_SPEED
- * @property {string} CLOCK
+ * @property {number} CLOCK
  */
 
 /**

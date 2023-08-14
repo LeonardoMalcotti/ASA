@@ -23,3 +23,13 @@ export function remove_from_list(list,element){
 		list.splice(i,1);
 	}
 }
+
+/**
+ * calculate the distance between the two positions in the case there are no walls.
+ * @param {Position} from
+ * @param {Position} to
+ * @return {number}
+ */
+export function optimal_distance(from, to){
+	return Math.abs(from.x - to.x) + Math.abs(from.y - from.y);
+}
