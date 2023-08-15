@@ -15,15 +15,6 @@ export default class GoPutDown extends Intention {
 	 * @type {Position}
 	 */
 	position;
-	/**
-	 * @type {(undefined | Tile[])}
-	 */
-	possible_path;
-
-	/**
-	 * @type {number}
-	 */
-	possible_reward;
 
 	/**
 	 *
@@ -34,8 +25,6 @@ export default class GoPutDown extends Intention {
 		super();
 		this.parcels_id = parcels_id;
 		this.position = position;
-		this.possible_path = undefined;
-		this.possible_reward = 0;
 	}
 
 	/**

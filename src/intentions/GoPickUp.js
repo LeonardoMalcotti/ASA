@@ -15,11 +15,6 @@ export default class GoPickUp extends Intention{
 	 *  @type {Position}
 	 */
 	position;
-	/**
-	 * @type {(undefined | Tile[])}
-	 */
-	possible_path;
-
 
 	/**
 	 *
@@ -30,9 +25,7 @@ export default class GoPickUp extends Intention{
 		super();
 		this.parcel_id = parcel_id;
 		this.position = position;
-		this.possible_path = undefined;
 	}
-
 
 	/**
 	 *
@@ -57,7 +50,8 @@ export default class GoPickUp extends Intention{
 			return false;
 		}
 
-		if(parcel.reward_after_n_steps(beliefs, this.possible_path.length) <= 0){
+		this.possible_reward = parcel.reward_after_n_steps(beliefs, this.possible_path.length);
+		if(this.possible_reward <= 0){
 			return false;
 		}
 
