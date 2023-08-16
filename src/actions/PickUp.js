@@ -11,4 +11,12 @@ export default class PickUp extends Action {
 		super();
 		this.parcel_id = parcel_id;
 	}
+
+	/**
+	 * @param {DeliverooApi} client
+	 * @return {Promise<number[]>}
+	 */
+	async execute(client){
+		return client.pickup();
+	}
 }

@@ -2,6 +2,7 @@ import BeliefSet from "./classes/BeliefSet.js";
 import {Explore} from "./intentions/Intention.js";
 import {DeliverooApi} from "@unitn-asa/deliveroo-js-client";
 import config from "../config.js";
+import Executor from "./classes/Executor.js";
 
 class Agent {
 
@@ -59,7 +60,6 @@ class Agent {
      * @param {Deliberate} deliberate
      * @param {IntentionRevision} intentionRevision
      * @param {Planner} planner
-     * @param {Executor} executor
      */
     constructor(onMapCallback,
                 onAgentCallback,
@@ -68,8 +68,7 @@ class Agent {
                 optionsFiltering,
                 deliberate,
                 intentionRevision,
-                planner,
-                executor) {
+                planner) {
 
         this.#apiClient = new DeliverooApi( config.host, config.token );
         this.#beliefSet = new BeliefSet();
@@ -82,7 +81,7 @@ class Agent {
         this.#deliberate = deliberate;
         this.#intentionRevision = intentionRevision;
         this.#planner = planner;
-        this.#executor = executor;
+        this.#executor = new Executor(this.#apiClient);
 
         this.#apiClient.onYou((you) => this.#beliefSet.me = you);
         this.#apiClient.onConfig((config) => this.#beliefSet.config = config);

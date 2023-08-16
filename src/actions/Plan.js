@@ -10,7 +10,7 @@ export default class Plan {
 	}
 
 	/**
-	 * @param {Action} action
+	 * @param {(Action | Action[])} action
 	 */
 	addAction(action){
 		this.actions.push(action);

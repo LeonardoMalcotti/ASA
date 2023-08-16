@@ -117,6 +117,13 @@
  * @return {void}
  */
 
+/**
+ * @callback Planner
+ * @param {BeliefSet} beliefs
+ * @param {Intention} intention
+ * @return {Plan}
+ */
+
 export class aNode {
     tile;
     g;

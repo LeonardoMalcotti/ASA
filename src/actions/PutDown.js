@@ -11,4 +11,12 @@ export default class PutDown extends Action {
 		super();
 		this.parcels_id = parcels_id;
 	}
+
+	/**
+	 * @param {DeliverooApi} client
+	 * @return {Promise<number[]>}
+	 */
+	async execute(client){
+		return client.putdown(this.parcels_id);
+	}
 }
