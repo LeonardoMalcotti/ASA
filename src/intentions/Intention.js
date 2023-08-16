@@ -19,9 +19,9 @@ export class Intention {
     /**
      *
      * @param {BeliefSet} beliefs
-     * @return {boolean}
+     * @return {Promise<boolean>}
      */
-    achievable(beliefs){
+    async achievable(beliefs){
         return false;
     }
 }

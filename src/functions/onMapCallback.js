@@ -1,3 +1,5 @@
+import {Tile} from "../classes/Tile.js";
+
 /**
  * @param {number} width
  * @param {number} height

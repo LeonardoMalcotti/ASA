@@ -1,10 +1,10 @@
 import BeliefSet from "./classes/BeliefSet.js";
-import {Explore} from "./intentions/Intention.js";
 import {DeliverooApi} from "@unitn-asa/deliveroo-js-client";
 import config from "../config.js";
 import Executor from "./classes/Executor.js";
+import DefaultIntention from "./intentions/DefaultIntention.js";
 
-class Agent {
+export default class Agent {
 
     /**@type {DeliverooApi} */
     #apiClient
@@ -34,10 +34,21 @@ class Agent {
     /**@type {Executor} */
     #executor;
 
-    changePlan(){
+    /**
+     *
+     * @param {Intention} new_intention
+     * @return {Promise<void>}
+     */
+    async changePlan(new_intention){
+        console.log("called changePlan")
+        console.log(new_intention);
         // stop execution
         // create new plan from current intention
         // start new execution given new plan
+        this.#currentIntention = new_intention;
+        this.#executor.stop_plan();
+        this.#executor.set_new_plan(await this.#planner(this.#beliefSet,this.#currentIntention));
+        let res = await this.#executor.execute_plan();
     }
 
     intentionRevisionCallback() {
@@ -47,7 +58,9 @@ class Agent {
             this.#optionsGeneration,
             this.#optionsFiltering,
             this.#deliberate,
-            this.changePlan
+            (intention) => {
+                this.changePlan(intention)
+            }
         );
     }
 
@@ -72,7 +85,7 @@ class Agent {
 
         this.#apiClient = new DeliverooApi( config.host, config.token );
         this.#beliefSet = new BeliefSet();
-        this.#currentIntention = new Explore();
+        this.#currentIntention = new DefaultIntention();
         this.#onMapCallback = onMapCallback;
         this.#onAgentCallback = onAgentCallback;
         this.#onParcelCallback = onParcelCallback;
@@ -82,7 +95,9 @@ class Agent {
         this.#intentionRevision = intentionRevision;
         this.#planner = planner;
         this.#executor = new Executor(this.#apiClient);
+    }
 
+    configure() {
         this.#apiClient.onYou((you) => this.#beliefSet.me = you);
         this.#apiClient.onConfig((config) => this.#beliefSet.config = config);
 
@@ -91,7 +106,18 @@ class Agent {
         );
 
         this.#apiClient.onParcelsSensing((parcels) =>
-            this.#onParcelCallback(parcels,this.#beliefSet,this.intentionRevisionCallback)
+            this.#onParcelCallback(parcels,this.#beliefSet,() => {
+                this.#intentionRevision(
+                    this.#beliefSet,
+                    this.#currentIntention,
+                    this.#optionsGeneration,
+                    this.#optionsFiltering,
+                    this.#deliberate,
+                    (intention) => {
+                        this.changePlan(intention)
+                    }
+                );
+            })
         );
 
         this.#apiClient.onAgentsSensing((agents) =>
@@ -100,4 +126,5 @@ class Agent {
 
         this.changePlan();
     }
+
 }

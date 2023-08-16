@@ -13,30 +13,32 @@ import PickUp from "../actions/PickUp.js";
  *
  * @param {BeliefSet} beliefs
  * @param {Intention} intention
- * @return {Plan}
  */
-export function plan_simple(beliefs, intention) {
+export async function plan_simple(beliefs, intention) {
+	console.log("called plan_simple");
+	console.log(intention);
 	let plan = new Plan();
 
 	if(intention instanceof GoPutDown) {
+		console.log()
 		if(intention.possible_path === undefined){
-			intention.possible_path = calculate_path(beliefs,beliefs.my_position(),intention.position);
+			intention.possible_path = await calculate_path(beliefs, beliefs.my_position(), intention.position);
 		}
 
-		plan.addAction(path_to_actions(beliefs.my_position(),intention.possible_path));
-		plan.addAction(new PutDown(intention.parcels_id));
+		path_to_actions(beliefs.my_position(),intention.possible_path).forEach((a) => {plan.actions.push(a)});
+		plan.actions.push(new PutDown(intention.parcels_id));
 	}
 
 	if(intention instanceof GoPickUp) {
 		if(intention.possible_path === undefined){
-			intention.possible_path = calculate_path(beliefs,beliefs.my_position(),intention.position);
+			intention.possible_path = await calculate_path(beliefs, beliefs.my_position(), intention.position);
 		}
 
-		plan.addAction(path_to_actions(beliefs.my_position(),intention.possible_path));
-		plan.addAction(new PickUp(intention.parcels_id));
+		path_to_actions(beliefs.my_position(),intention.possible_path).forEach((a) => {plan.actions.push(a)});
+		plan.actions.push(new PickUp(intention.parcels_id));
 	}
 
-
+	console.log(plan)
 	return plan;
 }
 

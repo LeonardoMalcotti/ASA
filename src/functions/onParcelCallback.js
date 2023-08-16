@@ -14,7 +14,7 @@ const PARCEL_PROBABILITY_TRESHOLD = 0.5;
  * @returns {Promise<void>}
  */
 export async function onParcelCallback_simple(parcels, beliefs, reviseIntention){
-
+    //console.log("called onParcelCallback_simple");
     for(let existing_belief of beliefs.parcelBeliefs){
         let new_data = parcels.find((p) => p.id === existing_belief.id)
         if(new_data !== undefined){

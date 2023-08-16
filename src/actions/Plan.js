@@ -8,11 +8,4 @@ export default class Plan {
 	constructor() {
 		this.actions = [];
 	}
-
-	/**
-	 * @param {(Action | Action[])} action
-	 */
-	addAction(action){
-		this.actions.push(action);
-	}
 }

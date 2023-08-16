@@ -23,7 +23,7 @@ export default class BeliefSet {
 
     /**
      * @param {string} id the id of the parcel to get.
-     * @return {ParcelBelief}
+     * @return {(ParcelBelief | undefined)}
      */
     getParcelBelief(id) {
         return this.parcelBeliefs.find((p) => p.id === id);

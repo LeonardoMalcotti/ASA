@@ -30,28 +30,31 @@ export default class GoPickUp extends Intention{
 	/**
 	 *
 	 * @param {BeliefSet} beliefs
-	 * @return {Boolean}
+	 * @return {Promise<boolean>}
 	 */
-	achievable(beliefs) {
+	async achievable(beliefs) {
 		let parcel = beliefs.getParcelBelief(this.parcel_id);
+		if(parcel === undefined) {
+			return false;
+		}
 
-		if(parcel.held_by !== "") {
+		if (parcel.held_by !== "") {
 			return false;
 		}
 
 		let min_distance = optimal_distance(beliefs.my_position(), this.position);
-		if(parcel.reward_after_n_steps(beliefs, min_distance) <= 0){
+		if (parcel.reward_after_n_steps(beliefs, min_distance) <= 0) {
 			return false;
 		}
 
-		this.possible_path = calculate_path(beliefs,beliefs.my_position(),this.position);
+		this.possible_path = await calculate_path(beliefs, beliefs.my_position(), this.position);
 
-		if(this.possible_path === []){
+		if (this.possible_path === []) {
 			return false;
 		}
 
 		this.possible_reward = parcel.reward_after_n_steps(beliefs, this.possible_path.length);
-		if(this.possible_reward <= 0){
+		if (this.possible_reward <= 0) {
 			return false;
 		}
 

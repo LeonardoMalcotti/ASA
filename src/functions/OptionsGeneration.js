@@ -9,7 +9,7 @@ import GoPutDown from "../intentions/GoPutDown.js";
  * @return {DesireSet}
  */
 export function optionsGeneration_simple(beliefs,currentIntention)  {
-
+	console.log("called optionsGeneration_simple");
 	let free_parcels = beliefs.parcelBeliefs.filter((p) => p.held_by === "");
 	let held_parcels = beliefs.parcelBeliefs.filter((p) => p.held_by === beliefs.me.id);
 

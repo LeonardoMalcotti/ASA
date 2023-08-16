@@ -33,12 +33,15 @@ export default class GoPutDown extends Intention {
 	 * If it does not, then it's removed from the list of parcel to deliver.
 	 * If the list of parcel to deliver is empty the intention is considered unachievable.
 	 * @param {BeliefSet} beliefs
-	 * @return {Boolean}
+	 * @return {Promise<boolean>}
 	 */
-	achievable(beliefs) {
+	async achievable(beliefs) {
 
-		this.parcels_id = this.parcels_id.filter((id) => {
+		this.parcels_id = this.parcels_id.filter(async (id) => {
 			let parcel = beliefs.getParcelBelief(id);
+			if(parcel === undefined){
+				return false;
+			}
 
 			if(parcel.held_by !== beliefs.me.id){
 				return false;
@@ -51,7 +54,7 @@ export default class GoPutDown extends Intention {
 			}
 
 			if(this.possible_path === undefined){
-				this.possible_path = calculate_path(beliefs,beliefs.my_position(),this.position);
+				this.possible_path = await calculate_path(beliefs,beliefs.my_position(),this.position);
 			}
 
 			if(this.possible_path === []){
@@ -68,6 +71,6 @@ export default class GoPutDown extends Intention {
 			return true;
 		});
 
-		return this.parcels_id !== [];
+		return this.parcels_id.length !== 0;
 	}
 }

@@ -11,6 +11,7 @@ import GoPickUp from "../intentions/GoPickUp.js";
  * @return {Intention}
  */
 export function deliberate_simple(beliefs, currentIntention, desires) {
+	console.log("called deliberate_dimple");
 	desires.intentions.sort((i1,i2) => i1.possible_reward - i2.possible_reward);
 	return desires.intentions.pop();
 }
@@ -106,11 +107,15 @@ export function deliberate_heuristic_approx(beliefs, currentIntention, desires) 
 
 			if(i instanceof GoPickUp){
 				let parcel = beliefs.getParcelBelief(i.parcel_id);
-				let dist = distance_to_the_nearest_delivery(beliefs, i.parcel_id,true);
-				if(dist === -1) {
+				if(parcel === undefined){
 					i.possible_reward = -1;
 				} else {
-					i.possible_reward = parcel.reward_after_n_steps(beliefs,i.possible_path.length + dist);
+					let dist = distance_to_the_nearest_delivery(beliefs, i.parcel_id,true);
+					if(dist === -1) {
+						i.possible_reward = -1;
+					} else {
+						i.possible_reward = parcel.reward_after_n_steps(beliefs,i.possible_path.length + dist);
+					}
 				}
 			}
 

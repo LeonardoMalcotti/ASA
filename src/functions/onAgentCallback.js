@@ -7,7 +7,7 @@ import AgentBelief from "../classes/AgentBelief.js";
  * @returns {Promise<void>}
  */
 export async function onAgentCallback_simple(agents,beliefs) {
-
+	//console.log("called onAgentCallback_simple");
 	for(let existing_belief of beliefs.agentBeliefs){
 		let new_data = agents.find((a) => a.id === existing_belief.id);
 		if(new_data !== undefined){

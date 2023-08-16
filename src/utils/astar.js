@@ -34,7 +34,7 @@ function heuristic(start, end) {
  * @param {Tile} start
  * @param {Tile} goal
  * @param {function (Tile,Tile):number} heuristic
- * @returns {Tile[]}
+ * @return { Promise<Tile[]>}
  */
 export async function astar(map,start,goal,heuristic){
 
@@ -105,7 +105,6 @@ export async function astar(map,start,goal,heuristic){
  * @param {BeliefSet} beliefs
  * @param {Position} from
  * @param {Position} to
- * @return {Tile[]}
  */
 export async function calculate_path(beliefs, from, to){
     let map = beliefs.mapBeliefs;
