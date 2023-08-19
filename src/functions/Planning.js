@@ -8,6 +8,8 @@ import GoRight from "../actions/GoRight.js";
 import GoLeft from "../actions/GoLeft.js";
 import PutDown from "../actions/PutDown.js";
 import PickUp from "../actions/PickUp.js";
+import DefaultIntention from "../intentions/DefaultIntention.js";
+import calculate_random_path from "../utils/standard_path.js";
 
 /**
  *
@@ -36,6 +38,11 @@ export async function plan_simple(beliefs, intention) {
 
 		path_to_actions(beliefs.my_position(),intention.possible_path).forEach((a) => {plan.actions.push(a)});
 		plan.actions.push(new PickUp(intention.parcels_id));
+	}
+	
+	if(intention instanceof DefaultIntention) {
+		let path = calculate_random_path(beliefs);
+		path_to_actions(beliefs.my_position(),path).forEach((a) => {plan.actions.push(a)});
 	}
 
 	console.log(plan)

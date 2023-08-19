@@ -51,19 +51,6 @@ export default class Agent {
         let res = await this.#executor.execute_plan();
     }
 
-    intentionRevisionCallback() {
-        this.#intentionRevision(
-            this.#beliefSet,
-            this.#currentIntention,
-            this.#optionsGeneration,
-            this.#optionsFiltering,
-            this.#deliberate,
-            (intention) => {
-                this.changePlan(intention)
-            }
-        );
-    }
-
     /**
      * @param {OnMapCallback} onMapCallback
      * @param {OnAgentCallback} onAgentCallback
