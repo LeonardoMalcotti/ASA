@@ -16,24 +16,23 @@ export async function intentionRevision_simple(beliefs,
                                          deliberate,
                                          completion){
 	console.log("called intentionRevision_simple");
+	console.log("current intention : " + currentIntention);
 	if(currentIntention === undefined){
 		console.log("current intention is undefined")
 		currentIntention = new DefaultIntention();
 	}
+	
+	let current_intention_achievable = await currentIntention.achievable(beliefs);
+	
 	if (currentIntention instanceof DefaultIntention ||
-		!await currentIntention.achievable(beliefs))
+		!current_intention_achievable)
 	{
 		let options = optionsGeneration(beliefs,currentIntention);
-		console.log("all options")
-		console.log(options.intentions);
-		options = await optionsFiltering(beliefs,currentIntention,options);
-		console.log("filtered options")
-		console.log(options.intentions);
-		let intention = deliberate(beliefs,currentIntention,options);
-		console.log("deliberated one")
-		console.log(intention);
+		let filtered = await optionsFiltering(beliefs,currentIntention,options);
+		let intention = deliberate(beliefs,currentIntention,filtered);
 		completion(intention);
 	} else {
+		console.log("did not change intention");
 		// check existence of a better option
 	}
 }

@@ -22,7 +22,9 @@ export function optionsGeneration_simple(beliefs,currentIntention)  {
 
 	// generate go put down intentions for each delivery tile
 	let held_parcels_ids = held_parcels.map((p) => p.id);
-	beliefs.mapBeliefs.delivery_tiles.forEach((d) => desires.add_intention(new GoPutDown(held_parcels_ids,d.toPosition())))
-
+	if(held_parcels_ids.length !== 0) {
+		beliefs.mapBeliefs.delivery_tiles.forEach((d) => desires.add_intention(new GoPutDown(held_parcels_ids, d.toPosition())))
+	}
+	
 	return desires;
 }

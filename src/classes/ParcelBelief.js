@@ -79,7 +79,7 @@ export default class ParcelBelief {
         let movement_speed = beliefs.config.MOVEMENT_DURATION;
         let movement_steps = beliefs.config.MOVEMENT_STEPS;
 
-        let seconds = (steps / movement_steps) * (1/movement_speed)
+        let seconds = (steps / movement_steps) * (movement_speed/1000)
         switch (decay_interval) {
             case "1s": return this.reward - Math.round(seconds);
             case "2s": return this.reward - Math.round(seconds/2);

@@ -17,6 +17,7 @@ export default class PickUp extends Action {
 	 * @return {Promise<number[]>}
 	 */
 	async execute(client){
+		console.log("execute: PickUp");
 		return client.pickup();
 	}
 }

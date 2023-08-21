@@ -2,7 +2,8 @@
  * @param {BeliefSet} beliefs
  * @return {Tile[]}
  */
-export default function calculate_random_path(beliefs){
+export default async function calculate_random_path(beliefs){
+	
 	/** @type {Tile[]} */
 	let visited = [];
 	
@@ -14,22 +15,18 @@ export default function calculate_random_path(beliefs){
 	
 	while (!done){
 		/** @type {Tile[]} */
-		let to_visit = [];
+		let to_visit = neighbors(last_tile,map).filter((t) =>{
+			return visited.find((tt) => t.x === tt.x && t.y === tt.y);
+		})
 		
-		// push to the list of "to be visited" tiles the neighbors tile of the last visited tiles
-		// minus the ones which have been already visited.
-		neighbors(last_tile,map).forEach((t) => {
-			if(visited.find(t) === undefined){
-				to_visit.push(t);
-			}
-		});
-		
+		console.log(to_visit);
 		if(to_visit.length === 0){
 			done = true;
 			continue;
 		}
 		
 		let next_tile = to_visit[Math.floor(Math.random() * (2*to_visit.length))];
+		console.log(next_tile);
 		visited.push(next_tile);
 	}
 	
@@ -39,6 +36,7 @@ export default function calculate_random_path(beliefs){
 /**
  * @param {Tile} tile
  * @param {Tile[]} map
+ * @return {Tile[]}
  */
 function neighbors(tile, map){
 	return map.filter((t) => (

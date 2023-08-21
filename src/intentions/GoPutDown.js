@@ -15,7 +15,7 @@ export default class GoPutDown extends Intention {
 	 * @type {Position}
 	 */
 	position;
-
+	
 	/**
 	 *
 	 * @param {string[]} parcels_id
@@ -36,41 +36,45 @@ export default class GoPutDown extends Intention {
 	 * @return {Promise<boolean>}
 	 */
 	async achievable(beliefs) {
-
-		this.parcels_id = this.parcels_id.filter(async (id) => {
-			let parcel = beliefs.getParcelBelief(id);
-			if(parcel === undefined){
-				return false;
-			}
-
-			if(parcel.held_by !== beliefs.me.id){
-				return false;
-			}
-
-			let min_distance = optimal_distance(beliefs.my_position(), this.position);
-
-			if(parcel.reward_after_n_steps(beliefs, min_distance) <= 0){
-				return false;
-			}
-
-			if(this.possible_path === undefined){
-				this.possible_path = await calculate_path(beliefs,beliefs.my_position(),this.position);
-			}
-
-			if(this.possible_path === []){
-				return false;
-			}
-
-			let rw = parcel.reward_after_n_steps(beliefs, this.possible_path.length);
-			if(rw <= 0){
-				return false;
-			}
-
-			this.possible_reward += rw;
-
+		/*
+		if(this.position.x === beliefs.my_position().x && this.position.y === beliefs.my_position().y){
 			return true;
-		});
-
+		}*/
+		
+		let res = await Promise.all(this.parcels_id.map((id) => this.achievable_filter(beliefs,id)));
+		console.log(res);
+		this.parcels_id = this.parcels_id.filter((v,i) => res[i]);
+		
+		console.log(this.parcels_id);
 		return this.parcels_id.length !== 0;
+	}
+	
+	/**
+	 * @param {BeliefSet} beliefs
+	 * @param {string} id
+	 * @return {Promise<boolean>}
+	 */
+	async achievable_filter(beliefs, id){
+		let parcel = beliefs.getParcelBelief(id);
+		
+		if(parcel === undefined) return false;
+		if(parcel.held_by !== beliefs.me.id) return false;
+		
+		let min_distance = optimal_distance(beliefs.my_position(), this.position);
+		
+		if(parcel.reward_after_n_steps(beliefs, min_distance) <= 0) return false;
+		
+		if(this.possible_path === undefined){
+			this.possible_path = await calculate_path(beliefs,beliefs.my_position(),this.position);
+		}
+		
+		if(this.possible_path === []) return false;
+		
+		let rw = parcel.reward_after_n_steps(beliefs, this.possible_path.length);
+		if(rw <= 0) return false;
+		
+		this.possible_reward += rw;
+		
+		return true;
 	}
 }

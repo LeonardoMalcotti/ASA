@@ -17,12 +17,10 @@ import calculate_random_path from "../utils/standard_path.js";
  * @param {Intention} intention
  */
 export async function plan_simple(beliefs, intention) {
-	console.log("called plan_simple");
-	console.log(intention);
 	let plan = new Plan();
 
 	if(intention instanceof GoPutDown) {
-		console.log()
+		console.log("planning a put down");
 		if(intention.possible_path === undefined){
 			intention.possible_path = await calculate_path(beliefs, beliefs.my_position(), intention.position);
 		}
@@ -32,6 +30,7 @@ export async function plan_simple(beliefs, intention) {
 	}
 
 	if(intention instanceof GoPickUp) {
+		console.log("planning a pick up");
 		if(intention.possible_path === undefined){
 			intention.possible_path = await calculate_path(beliefs, beliefs.my_position(), intention.position);
 		}
@@ -40,8 +39,9 @@ export async function plan_simple(beliefs, intention) {
 		plan.actions.push(new PickUp(intention.parcels_id));
 	}
 	
-	if(intention instanceof DefaultIntention) {
-		let path = calculate_random_path(beliefs);
+	if(intention instanceof DefaultIntention || intention === undefined) {
+		console.log("planning a default");
+		let path = await calculate_random_path(beliefs);
 		path_to_actions(beliefs.my_position(),path).forEach((a) => {plan.actions.push(a)});
 	}
 

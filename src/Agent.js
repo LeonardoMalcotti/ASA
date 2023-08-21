@@ -5,7 +5,10 @@ import Executor from "./classes/Executor.js";
 import DefaultIntention from "./intentions/DefaultIntention.js";
 
 export default class Agent {
-
+    
+    /**@type {boolean} */
+    #started
+    
     /**@type {DeliverooApi} */
     #apiClient
 
@@ -37,7 +40,6 @@ export default class Agent {
     /**
      *
      * @param {Intention} new_intention
-     * @return {Promise<void>}
      */
     async changePlan(new_intention){
         console.log("called changePlan")
@@ -48,7 +50,20 @@ export default class Agent {
         this.#currentIntention = new_intention;
         this.#executor.stop_plan();
         this.#executor.set_new_plan(await this.#planner(this.#beliefSet,this.#currentIntention));
-        let res = await this.#executor.execute_plan();
+        this.#executor.execute_plan().then((res) => {
+            if(res === true) {
+                this.#intentionRevision(
+                    this.#beliefSet,
+                    this.#currentIntention,
+                    this.#optionsGeneration,
+                    this.#optionsFiltering,
+                    this.#deliberate,
+                    (intention) => {
+                        this.changePlan(intention);
+                    }
+                );
+            }
+        })
     }
 
     /**
@@ -82,10 +97,18 @@ export default class Agent {
         this.#intentionRevision = intentionRevision;
         this.#planner = planner;
         this.#executor = new Executor(this.#apiClient);
+        this.#started = false;
     }
 
     configure() {
-        this.#apiClient.onYou((you) => this.#beliefSet.me = you);
+        this.#apiClient.onYou((you) => {
+            this.#beliefSet.me = you;
+            if(!this.#started) {
+                this.#started = true;
+                this.changePlan(this.#currentIntention);
+            }
+        });
+        
         this.#apiClient.onConfig((config) => this.#beliefSet.config = config);
 
         this.#apiClient.onMap((width,height,tiles) =>
@@ -100,8 +123,8 @@ export default class Agent {
                     this.#optionsGeneration,
                     this.#optionsFiltering,
                     this.#deliberate,
-                    (intention) => {
-                        this.changePlan(intention)
+                    async (intention) => {
+                        await this.changePlan(intention);
                     }
                 );
             })
@@ -110,8 +133,5 @@ export default class Agent {
         this.#apiClient.onAgentsSensing((agents) =>
             this.#onAgentCallback(agents,this.#beliefSet)
         );
-
-        this.changePlan();
     }
-
 }

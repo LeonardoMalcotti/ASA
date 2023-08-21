@@ -32,16 +32,22 @@ export default class Executor {
 
 		for(let action of this.currentPlan.actions){
 			let result = await action.execute(this.client);
-			console.log(result);
+			
 			if(!result) {
+				console.log("action failed");
 				return false;
 			}
 
 			if(this.stopped){
+				console.log("plan stopped");
 				return false;
 			}
 		}
-
+		
+		console.log("plan completed");
+		
+		this.currentPlan = undefined;
+		this.stopped = true;
 		return true;
 	}
 
