@@ -9,10 +9,12 @@ import GoPutDown from "../intentions/GoPutDown.js";
  * @return {DesireSet}
  */
 export function optionsGeneration_simple(beliefs,currentIntention)  {
-	console.log("called optionsGeneration_simple");
+	console.log("optionsGeneration_simple");
 	let free_parcels = beliefs.parcelBeliefs.filter((p) => p.held_by === "");
 	let held_parcels = beliefs.parcelBeliefs.filter((p) => p.held_by === beliefs.me.id);
-
+	//console.log("optionsGeneration_simple : free_parcels -> " + free_parcels.length);
+	//console.log("optionsGeneration_simple : held_parcels -> " + held_parcels.length);
+	
 	// should get also the allied agents from the beliefs to create intentions that create a team plan
 
 	let desires = new DesireSet();
@@ -26,5 +28,6 @@ export function optionsGeneration_simple(beliefs,currentIntention)  {
 		beliefs.mapBeliefs.delivery_tiles.forEach((d) => desires.add_intention(new GoPutDown(held_parcels_ids, d.toPosition())))
 	}
 	
+	//console.log("optionsGeneration_simple : generated desires -> " + desires.intentions.length);
 	return desires;
 }

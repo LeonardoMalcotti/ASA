@@ -11,9 +11,13 @@ import GoPickUp from "../intentions/GoPickUp.js";
  * @return {Intention}
  */
 export function deliberate_simple(beliefs, currentIntention, desires) {
+	console.log("deliberate_simple");
+	if(desires.intentions.length === 0) return undefined;
 	desires.intentions.sort((i1,i2) => i1.possible_reward - i2.possible_reward);
 	return desires.intentions.pop();
 }
+
+
 
 
 /**

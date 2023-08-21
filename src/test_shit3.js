@@ -1,13 +1,7 @@
+//let rnd = Math.floor(Math.random() * (to_visit.length));
 
-function Log(f,message,level="log"){
-	console.log(f.name);
+let i = 0;
+while(i < 1000){
+	console.log(Math.floor(Math.random() * (3)));
+	i ++;
 }
-
-function do_stuff(){
-	Log(self, "some");
-	
-	//this.log();
-	console.log("doing stuff");
-}
-
-do_stuff();

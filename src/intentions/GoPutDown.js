@@ -26,6 +26,13 @@ export default class GoPutDown extends Intention {
 		this.parcels_id = parcels_id;
 		this.position = position;
 	}
+	
+	description() {
+		return this.constructor.name + " " +
+			this.parcels_id + " in " +
+			this.position.description() +
+			" completed " + this.achieved;
+	}
 
 	/**
 	 * Basically, for each parcel to put down, check if it is held by the agent, if it doesn't expire before being brought to destination.
@@ -36,6 +43,7 @@ export default class GoPutDown extends Intention {
 	 * @return {Promise<boolean>}
 	 */
 	async achievable(beliefs) {
+		if(this.achieved) return false;
 		/*
 		if(this.position.x === beliefs.my_position().x && this.position.y === beliefs.my_position().y){
 			return true;

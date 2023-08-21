@@ -5,4 +5,8 @@ export default class DefaultIntention extends Intention{
 	async achievable(beliefs) {
 		return true;
 	}
+	
+	description() {
+		return this.constructor.name;
+	}
 }

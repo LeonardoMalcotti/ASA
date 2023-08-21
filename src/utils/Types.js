@@ -77,6 +77,7 @@
  * @param {OptionsGeneration} optionsGeneration
  * @param {OptionsFiltering} optionsFiltering
  * @param {Deliberate} deliberate
+ * @param {boolean} revision_running
  * @param {IntentionRevisionCompletion} completion
  * @return {void}
  */

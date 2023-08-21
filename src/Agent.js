@@ -9,6 +9,9 @@ export default class Agent {
     /**@type {boolean} */
     #started
     
+    /**@type {boolean} */
+    #revision_running
+    
     /**@type {DeliverooApi} */
     #apiClient
 
@@ -36,34 +39,41 @@ export default class Agent {
     #planner;
     /**@type {Executor} */
     #executor;
-
+    
+    async start(){
+        this.#started = true;
+        this.#executor.stop_plan();
+        this.#executor.set_new_plan(await this.#planner(this.#beliefSet,this.#currentIntention));
+        return this.#executor.execute_plan();
+    }
+    
     /**
      *
      * @param {Intention} new_intention
      */
     async changePlan(new_intention){
-        console.log("called changePlan")
-        console.log(new_intention);
-        // stop execution
-        // create new plan from current intention
-        // start new execution given new plan
+        console.log("changePlan : new intention -> " + new_intention.description());
         this.#currentIntention = new_intention;
         this.#executor.stop_plan();
         this.#executor.set_new_plan(await this.#planner(this.#beliefSet,this.#currentIntention));
-        this.#executor.execute_plan().then((res) => {
-            if(res === true) {
-                this.#intentionRevision(
-                    this.#beliefSet,
-                    this.#currentIntention,
-                    this.#optionsGeneration,
-                    this.#optionsFiltering,
-                    this.#deliberate,
-                    (intention) => {
-                        this.changePlan(intention);
-                    }
-                );
+        console.log("changePlan : plan changed");
+        /*let res = await this.#executor.execute_plan();
+        if(res === "completed" || res === "failed"){
+            if(res === "completed"){
+                this.#currentIntention.achieved = true;
             }
-        })
+            this.#intentionRevision(
+                this.#beliefSet,
+                this.#currentIntention,
+                this.#optionsGeneration,
+                this.#optionsFiltering,
+                this.#deliberate,
+                (intention) => {
+                    if (intention === undefined) console.error("execute_plan.then : passed an undefined intention");
+                    this.changePlan(intention);
+                }
+            );
+        }*/
     }
 
     /**
@@ -98,14 +108,45 @@ export default class Agent {
         this.#planner = planner;
         this.#executor = new Executor(this.#apiClient);
         this.#started = false;
+        this.#revision_running = false;
+    }
+    
+    last_plan_status = "None";
+    
+    async loop(){
+        
+        if(this.#executor.stopped && this.#executor.to_be_executed){
+            this.last_plan_status = await this.#executor.execute_plan();
+        }
+        
+        if(this.last_plan_status === "completed" || this.last_plan_status === "failed"){
+            this.#currentIntention.achieved = true;
+            this.#intentionRevision(
+                this.#beliefSet,
+                this.#currentIntention,
+                this.#optionsGeneration,
+                this.#optionsFiltering,
+                this.#deliberate,
+                this.#revision_running,
+                async (intention) => {
+                    this.changePlan(intention).then(() => {
+                        this.loop();
+                    })
+                }
+            );
+        }
+        
+        if(this.last_plan_status === "invalid"){
+            console.log("invalid status");
+        }
     }
 
-    configure() {
-        this.#apiClient.onYou((you) => {
+    async configure() {
+        this.#apiClient.onYou(async (you) => {
             this.#beliefSet.me = you;
+            
             if(!this.#started) {
-                this.#started = true;
-                this.changePlan(this.#currentIntention);
+                await this.loop();
             }
         });
         
@@ -123,8 +164,11 @@ export default class Agent {
                     this.#optionsGeneration,
                     this.#optionsFiltering,
                     this.#deliberate,
+                    this.#revision_running,
                     async (intention) => {
-                        await this.changePlan(intention);
+                        this.changePlan(intention).then(() => {
+                            this.loop();
+                        });
                     }
                 );
             })
@@ -133,5 +177,6 @@ export default class Agent {
         this.#apiClient.onAgentsSensing((agents) =>
             this.#onAgentCallback(agents,this.#beliefSet)
         );
+        
     }
 }

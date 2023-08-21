@@ -10,10 +10,16 @@ export class Intention {
      * @type {number}
      */
     possible_reward;
+    
+    /**
+     * @type {boolean}
+     */
+    achieved;
 
     constructor() {
         this.possible_reward = 0;
         this.possible_path = undefined;
+        this.achieved = false;
     }
 
     /**
@@ -23,5 +29,9 @@ export class Intention {
      */
     async achievable(beliefs){
         return false;
+    }
+    
+    description() {
+        return "None";
     }
 }

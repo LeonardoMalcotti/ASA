@@ -11,6 +11,10 @@ export default class Position {
         this.x = x;
         this.y = y;
     }
+    
+    description(){
+        return "[ x : " + this.x + ", y : " + this.y + " ]";
+    }
 }
 
 /**

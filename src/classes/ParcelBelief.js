@@ -28,10 +28,6 @@ export default class ParcelBelief {
      * @type {number}
      */
     reward;
-    /** to be removed i guess.
-     * @type {Destination}
-     */
-    nearest_destination;
     /** the last time the belief has been updated.
      * @type {number}
      */
@@ -46,16 +42,14 @@ export default class ParcelBelief {
      * @param {Position} position
      * @param {string} held_by
      * @param {number} reward
-     * @param {Destination} nearest_destination
      * @param {number} time
      * @param {number} probability
      */
-    constructor(id, position, held_by, reward, nearest_destination, time, probability) {
+    constructor(id, position, held_by, reward, time, probability) {
         this.id = id;
         this.position = position;
         this.held_by = held_by;
         this.reward = reward;
-        this.nearest_destination = nearest_destination;
         this.time = time;
         this.probability = probability;
     }
@@ -65,7 +59,7 @@ export default class ParcelBelief {
      * @return ParcelBelief
      */
     static fromParcelData(data) {
-        return new ParcelBelief(data.id, new Position(data.x,data.y),data.carriedBy === null ? "" : data.carriedBy,data.reward,null, Date.now(), 1);
+        return new ParcelBelief(data.id, new Position(data.x,data.y),data.carriedBy === null ? "" : data.carriedBy,data.reward, Date.now(), 1);
     }
 
     /**
@@ -80,6 +74,22 @@ export default class ParcelBelief {
         let movement_steps = beliefs.config.MOVEMENT_STEPS;
 
         let seconds = (steps / movement_steps) * (movement_speed/1000)
+        switch (decay_interval) {
+            case "1s": return this.reward - Math.round(seconds);
+            case "2s": return this.reward - Math.round(seconds/2);
+            case "5s": return this.reward - Math.round(seconds/5);
+            case "10s": return this.reward - Math.round(seconds/10);
+            case "infinite": return this.reward;
+        }
+    }
+    
+    /**
+     * @param {BeliefSet} beliefs
+     * @param {number} seconds
+     * @return {number}
+     */
+    reward_after_n_seconds(beliefs,seconds){
+        let decay_interval = beliefs.config.PARCEL_DECADING_INTERVAL;
         switch (decay_interval) {
             case "1s": return this.reward - Math.round(seconds);
             case "2s": return this.reward - Math.round(seconds/2);

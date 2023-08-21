@@ -40,9 +40,11 @@ export async function onParcelCallback_simple(parcels, beliefs, reviseIntention)
             }
 
             existing_belief.probability = existing_belief.probability - PARCEL_PROBABILITY_DECAY;
-            existing_belief.time = Date.now();
-            existing_belief.reward = existing_belief.reward - 1; // quite arbitrary, it should consider how much has passed, but the configuration on decay rate is not helping
-
+            let now = Date.now();
+            let time_passed = (now - existing_belief.time) / 1000;
+            existing_belief.reward = existing_belief.reward_after_n_seconds(beliefs,time_passed);
+            existing_belief.time = now;
+            
             if(existing_belief.reward <= 0){
                 beliefs.deleteParcelBelief(existing_belief);
                 continue;
@@ -71,10 +73,11 @@ export async function onParcelCallback_simple(parcels, beliefs, reviseIntention)
 
         // ignoring step of calculating nearest destination
 
-        beliefs.parcelBeliefs.push(ParcelBelief.fromParcelData(newData))
+        beliefs.parcelBeliefs.push(ParcelBelief.fromParcelData(newData));
     }
 
-    if(revise){
-        reviseIntention()
+    if(revise !== false){
+        console.log("onParcelCallback_simple : calling intention revision");
+        reviseIntention();
     }
 }

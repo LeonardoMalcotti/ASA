@@ -6,7 +6,7 @@ export default class GoRight extends Action {
 	 * @return {Promise<{x: number, y: number} | "false">}
 	 */
 	async execute(client){
-		console.log("execute: GoRight");
+		//console.log("execute: GoRight");
 		return client.move("right");
 	}
 }

@@ -20,32 +20,41 @@ export async function plan_simple(beliefs, intention) {
 	let plan = new Plan();
 
 	if(intention instanceof GoPutDown) {
-		console.log("planning a put down");
+		console.log("plan_simple : planning a put down");
 		if(intention.possible_path === undefined){
 			intention.possible_path = await calculate_path(beliefs, beliefs.my_position(), intention.position);
 		}
 
 		path_to_actions(beliefs.my_position(),intention.possible_path).forEach((a) => {plan.actions.push(a)});
 		plan.actions.push(new PutDown(intention.parcels_id));
+		/*console.log("my position" + beliefs.my_position());
+		console.log("path-------");
+		console.log(intention.possible_path);
+		console.log("plan-------");
+		console.log(plan);*/
 	}
 
 	if(intention instanceof GoPickUp) {
-		console.log("planning a pick up");
+		console.log("plan_simple : planning a pick up");
 		if(intention.possible_path === undefined){
 			intention.possible_path = await calculate_path(beliefs, beliefs.my_position(), intention.position);
 		}
 
 		path_to_actions(beliefs.my_position(),intention.possible_path).forEach((a) => {plan.actions.push(a)});
-		plan.actions.push(new PickUp(intention.parcels_id));
+		plan.actions.push(new PickUp(intention.parcel_id));
+		/*console.log("my position" + beliefs.my_position());
+		console.log("path-------");
+		console.log(intention.possible_path);
+		console.log("plan-------");
+		console.log(plan);*/
 	}
 	
 	if(intention instanceof DefaultIntention || intention === undefined) {
-		console.log("planning a default");
+		console.log("plan_simple : planning a default");
 		let path = await calculate_random_path(beliefs);
 		path_to_actions(beliefs.my_position(),path).forEach((a) => {plan.actions.push(a)});
 	}
-
-	console.log(plan)
+	
 	return plan;
 }
 

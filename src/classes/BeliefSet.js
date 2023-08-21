@@ -56,6 +56,6 @@ export default class BeliefSet {
      * @return {Position}
      */
     my_position(){
-        return new Position(this.me.x,this.me.y);
+        return new Position(Math.round(this.me.x),Math.round(this.me.y));
     }
 }
