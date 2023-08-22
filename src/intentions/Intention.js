@@ -10,16 +10,15 @@ export class Intention {
      * @type {number}
      */
     possible_reward;
-    
     /**
-     * @type {boolean}
+     * @type {("failed" | "completed" | "executing" | "new")}
      */
-    achieved;
+    status;
 
     constructor() {
         this.possible_reward = 0;
         this.possible_path = undefined;
-        this.achieved = false;
+        this.status = "new";
     }
 
     /**

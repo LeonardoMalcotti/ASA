@@ -29,7 +29,7 @@ export default class GoPickUp extends Intention{
 	
 	
 	description() {
-		return this.constructor.name + " " + this.parcel_id + " in " + this.position.description() + " completed " + this.achieved;
+		return this.constructor.name + " " + this.parcel_id + " in " + this.position.description() + " status " + this.status;
 	}
 	
 	/**
@@ -38,7 +38,7 @@ export default class GoPickUp extends Intention{
 	 * @return {Promise<boolean>}
 	 */
 	async achievable(beliefs) {
-		if(this.achieved) return false;
+		if(this.status === "completed" || this.status === "failed") return false;
 		
 		let parcel = beliefs.getParcelBelief(this.parcel_id);
 		if(parcel === undefined) {

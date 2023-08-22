@@ -16,6 +16,9 @@ export default class BeliefSet {
     parcelBeliefs;
     /**@type {Intention} */
     currentIntention;
+    /** @type {boolean} */
+    revision_running;
+    
 
     constructor() {
         this.mapBeliefs = new TileMap();
@@ -23,6 +26,7 @@ export default class BeliefSet {
         this.parcelBeliefs = [];
         this.me = {};
         this.currentIntention = new DefaultIntention();
+        this.revision_running = false;
     }
 
     /**

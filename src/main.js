@@ -19,4 +19,4 @@ let agent = new Agent(
 	plan_simple
 );
 
-agent.configure();
+await agent.configure();

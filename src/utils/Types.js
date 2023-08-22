@@ -62,7 +62,8 @@
  */
 
 /**
- * @callback IntentionRevisionCompletion
+ * @async
+ * @callback ChangePlanCallBack
  * @param {Intention} newIntention
  * @return {void}
  */
@@ -73,9 +74,8 @@
  * @param {OptionsGeneration} optionsGeneration
  * @param {OptionsFiltering} optionsFiltering
  * @param {Deliberate} deliberate
- * @param {boolean} revision_running
- * @param {IntentionRevisionCompletion} completion
- * @return {void}
+ * @param {ChangePlanCallBack} change_plan
+ * @return {Promise<void>}
  */
 
 /**

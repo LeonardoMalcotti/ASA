@@ -31,7 +31,7 @@ export default class GoPutDown extends Intention {
 		return this.constructor.name + " " +
 			this.parcels_id + " in " +
 			this.position.description() +
-			" completed " + this.achieved;
+			" status " + this.status;
 	}
 
 	/**
@@ -43,11 +43,7 @@ export default class GoPutDown extends Intention {
 	 * @return {Promise<boolean>}
 	 */
 	async achievable(beliefs) {
-		if(this.achieved) return false;
-		/*
-		if(this.position.x === beliefs.my_position().x && this.position.y === beliefs.my_position().y){
-			return true;
-		}*/
+		if(this.status === "completed" || this.status === "failed") return false;
 		
 		let res = await Promise.all(this.parcels_id.map((id) => this.achievable_filter(beliefs,id)));
 		//console.log(res);

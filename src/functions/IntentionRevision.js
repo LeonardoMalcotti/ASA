@@ -2,26 +2,23 @@ import DefaultIntention from "../intentions/DefaultIntention.js";
 
 /**
  * @param {BeliefSet} beliefs
- * @param {Intention} currentIntention
  * @param {OptionsGeneration} optionsGeneration
  * @param {OptionsFiltering} optionsFiltering
  * @param {Deliberate} deliberate
- * @param {boolean} revision_running
- * @param {IntentionRevisionCompletion} completion
+ * @param {ChangePlanCallBack} change_plan
  */
 export async function intentionRevision_simple(beliefs,
                                                optionsGeneration,
                                                optionsFiltering,
                                                deliberate,
-                                               revision_running,
-                                               completion){
+                                               change_plan){
 	
-	if(revision_running){
+	if(beliefs.revision_running){
 		console.warn("concurrent revision blocked------------------------------------");
 		return;
 	}
 	
-	revision_running = true;
+	beliefs.revision_running = true;
 	
 	console.log("intentionRevision_simple : current intention -> " + beliefs.currentIntention.description());
 	
@@ -35,10 +32,11 @@ export async function intentionRevision_simple(beliefs,
 		let intention = await deliberate(beliefs,filtered);
 		
 		if(!intention instanceof DefaultIntention){
-			completion(intention);
+			await change_plan(intention);
 		} else {
-			if(beliefs.currentIntention.achieved) {
-				completion(intention);
+			if (beliefs.currentIntention.status === "completed" ||
+				beliefs.currentIntention.status === "failed") {
+				await change_plan(intention);
 			}
 		}
 	} else {

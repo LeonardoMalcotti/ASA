@@ -8,9 +8,6 @@ export default class Agent {
     /**@type {boolean} */
     #started
     
-    /**@type {boolean} */
-    #revision_running
-    
     /**@type {DeliverooApi} */
     #apiClient
 
@@ -37,15 +34,7 @@ export default class Agent {
     /**@type {Executor} */
     #executor;
     
-    async start(){
-        this.#started = true;
-        this.#executor.stop_plan();
-        this.#executor.set_new_plan(await this.#planner(this.#beliefSet));
-        return this.#executor.execute_plan();
-    }
-    
     /**
-     *
      * @param {Intention} new_intention
      */
     async changePlan(new_intention){
@@ -87,23 +76,21 @@ export default class Agent {
         this.#planner = planner;
         this.#executor = new Executor(this.#apiClient);
         this.#started = false;
-        this.#revision_running = false;
     }
     
-    last_plan_status = "None";
-    
     async loop(){
-        this.#revision_running = false;
-        if(this.#executor.stopped && this.#executor.to_be_executed){
-            this.last_plan_status = await this.#executor.execute_plan();
+        //this.#revision_running = false;
+        if (this.#executor.stopped && this.#executor.to_be_executed){
+            this.#beliefSet.currentIntention.status = "executing";
+            this.#beliefSet.currentIntention.status = await this.#executor.execute_plan();
         }
         
-        if(this.last_plan_status === "completed" || this.last_plan_status === "failed"){
-            this.#beliefSet.currentIntention.achieved = true;
+        if (this.#beliefSet.currentIntention.status === "completed" ||
+            this.#beliefSet.currentIntention.status === "failed") {
             this.revision();
         }
         
-        if(this.last_plan_status === "invalid"){
+        if(this.#beliefSet.currentIntention.status === "invalid"){
             console.log("invalid status");
         }
     }
@@ -114,22 +101,18 @@ export default class Agent {
             this.#optionsGeneration,
             this.#optionsFiltering,
             this.#deliberate,
-            this.#revision_running,
             async (intention) => {
-                this.changePlan(intention).then(() => {
-                    this.loop();
-                })
+                this.changePlan(intention).then(this.loop);
             }
-        ).then(()=>{
-            console.log("revision finished");
-            this.#revision_running = false;
+        ).then(()=> {
+            console.log("revision completed");
+            this.#beliefSet.revision_running = false;
         });
     }
 
     async configure() {
         this.#apiClient.onYou(async (you) => {
             this.#beliefSet.me = you;
-            
             if(!this.#started) {
                 console.log("starting")
                 this.#started = true;
@@ -154,6 +137,5 @@ export default class Agent {
         this.#apiClient.onAgentsSensing((agents) =>
             this.#onAgentCallback(agents,this.#beliefSet)
         );
-        
     }
 }
