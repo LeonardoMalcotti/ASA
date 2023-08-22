@@ -7,9 +7,10 @@ export default class GoRight extends Action {
 	
 	/**
 	 * @param {DeliverooApi} client
+	 * @param {BeliefSet} beliefs
 	 * @return {Promise<{x: number, y: number} | "false">}
 	 */
-	async execute(client){
+	async execute(client, beliefs){
 		//console.log("execute: GoRight");
 		return client.move("right");
 	}

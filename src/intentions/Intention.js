@@ -33,4 +33,8 @@ export class Intention {
     description() {
         return "None";
     }
+    
+    hash() {
+        return "None";
+    }
 }

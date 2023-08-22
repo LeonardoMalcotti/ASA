@@ -11,13 +11,18 @@ export default class PutDown extends Action {
 		super();
 		this.parcels_id = parcels_id;
 	}
-
+	
 	/**
 	 * @param {DeliverooApi} client
-	 * @return {Promise<number[]>}
+	 * @param {BeliefSet} beliefs
+	 * @return {Promise<{x: number, y: number} | "false">}
 	 */
-	async execute(client){
+	async execute(client, beliefs){
+		let res = await client.putdown(this.parcels_id);
+		for(let p of res){
+			beliefs.deleteParcelBeliefById(p.id);
+		}
 		//console.log("execute: PutDown");
-		return client.putdown(this.parcels_id);
+		return res;
 	}
 }

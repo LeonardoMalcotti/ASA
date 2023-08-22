@@ -9,4 +9,9 @@ export default class DefaultIntention extends Intention{
 	description() {
 		return this.constructor.name;
 	}
+	
+	
+	hash() {
+		return "Default";
+	}
 }

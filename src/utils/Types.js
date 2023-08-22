@@ -116,7 +116,7 @@
 /**
  * @callback Planner
  * @param {BeliefSet} beliefs
- * @return {Plan}
+ * @return {Promise<Plan>}
  */
 
 export class aNode {

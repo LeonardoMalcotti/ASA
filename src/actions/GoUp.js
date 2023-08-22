@@ -7,9 +7,10 @@ export default class GoUp extends Action {
 	
 	/**
 	 * @param {DeliverooApi} client
+	 * @param {BeliefSet} beliefs
 	 * @return {Promise<{x: number, y: number} | "false">}
 	 */
-	async execute(client){
+	async execute(client, beliefs){
 		//console.log("execute: GoUp");
 		return client.move("up");
 	}

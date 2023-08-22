@@ -30,6 +30,11 @@ export default class GoPickUp extends Intention{
 		return this.constructor.name + " " + this.parcel_id + " in " + this.position.description() + " status " + this.status;
 	}
 	
+	
+	hash() {
+		return this.constructor.name+"_"+ this.parcel_id;
+	}
+	
 	/**
 	 *
 	 * @param {BeliefSet} beliefs

@@ -33,7 +33,11 @@ export default class GoPutDown extends Intention {
 			this.position.description() +
 			" status " + this.status;
 	}
-
+	
+	hash() {
+		return this.constructor.name+"_"+this.parcels_id.join("_")+"_"+this.position.x+"_"+this.position.y;
+	}
+	
 	/**
 	 * Basically, for each parcel to put down, check if it is held by the agent, if it doesn't expire before being brought to destination.
 	 * If it pass every check the calculated reward is added to the possible reward of the intention.

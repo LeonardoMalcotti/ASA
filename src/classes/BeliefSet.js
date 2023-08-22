@@ -51,6 +51,14 @@ export default class BeliefSet {
     deleteParcelBelief(parcel){
         this.parcelBeliefs.splice(this.parcelBeliefs.indexOf(parcel),1);
     }
+    
+    /**
+     * @method
+     * @param {string} id
+     */
+    deleteParcelBeliefById(id){
+        this.deleteParcelBelief(this.parcelBeliefs.find((p) => p.id === id));
+    }
 
     /**
      * @method
