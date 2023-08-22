@@ -38,7 +38,7 @@ export default class GoPickUp extends Intention{
 	 * @return {Promise<boolean>}
 	 */
 	async achievable(beliefs) {
-		if(this.status === "completed" || this.status === "failed") return false;
+		if(this.status === "completed" || this.status === "failed" || this.status === "stopped") return false;
 		
 		let parcel = beliefs.getParcelBelief(this.parcel_id);
 		if(parcel === undefined) {

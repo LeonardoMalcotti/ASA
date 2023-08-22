@@ -38,6 +38,8 @@ export default class Agent {
      * @param {Intention} new_intention
      */
     async changePlan(new_intention){
+        console.log("revision completed");
+        this.#beliefSet.revision_running = false;
         console.log("changePlan : new intention -> " + new_intention.description());
         this.#beliefSet.currentIntention = new_intention;
         this.#executor.stop_plan();
@@ -79,6 +81,9 @@ export default class Agent {
     }
     
     async loop(){
+        console.log("Loop called");
+        if(this.#beliefSet.currentIntention.status === "executing") return;
+        
         //this.#revision_running = false;
         if (this.#executor.stopped && this.#executor.to_be_executed){
             this.#beliefSet.currentIntention.status = "executing";
@@ -87,7 +92,7 @@ export default class Agent {
         
         if (this.#beliefSet.currentIntention.status === "completed" ||
             this.#beliefSet.currentIntention.status === "failed") {
-            this.revision();
+            await this.revision();
         }
         
         if(this.#beliefSet.currentIntention.status === "invalid"){
@@ -95,19 +100,16 @@ export default class Agent {
         }
     }
     
-    revision(){
-        this.#intentionRevision(
+    async revision(){
+        await this.#intentionRevision(
             this.#beliefSet,
             this.#optionsGeneration,
             this.#optionsFiltering,
             this.#deliberate,
             async (intention) => {
-                this.changePlan(intention).then(this.loop);
+                this.changePlan(intention).then(() => {this.loop()});
             }
-        ).then(()=> {
-            console.log("revision completed");
-            this.#beliefSet.revision_running = false;
-        });
+        );
     }
 
     async configure() {

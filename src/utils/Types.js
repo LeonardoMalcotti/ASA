@@ -58,11 +58,10 @@
  * @callback Deliberate
  * @param {BeliefSet} beliefs
  * @param {DesireSet} desires
- * @return {Intention}
+ * @return {Promise<Intention>}
  */
 
 /**
- * @async
  * @callback ChangePlanCallBack
  * @param {Intention} newIntention
  * @return {void}

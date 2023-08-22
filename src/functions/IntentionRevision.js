@@ -14,7 +14,6 @@ export async function intentionRevision_simple(beliefs,
                                                change_plan){
 	
 	if(beliefs.revision_running){
-		console.warn("concurrent revision blocked------------------------------------");
 		return;
 	}
 	
@@ -23,23 +22,32 @@ export async function intentionRevision_simple(beliefs,
 	console.log("intentionRevision_simple : current intention -> " + beliefs.currentIntention.description());
 	
 	let current_intention_achievable = await beliefs.currentIntention.achievable(beliefs);
+	if(current_intention_achievable) console.log("intentionRevision_simple : intention still achievable");
 	
 	// in this case the current intention has to be changed
-	if (beliefs.currentIntention instanceof DefaultIntention || !current_intention_achievable)
+	if (beliefs.currentIntention instanceof DefaultIntention ||
+		!current_intention_achievable)
 	{
 		let options = optionsGeneration(beliefs);
 		let filtered = await optionsFiltering(beliefs,options);
 		let intention = await deliberate(beliefs,filtered);
 		
-		if(!intention instanceof DefaultIntention){
+		if(!(intention instanceof DefaultIntention)){
 			await change_plan(intention);
 		} else {
 			if (beliefs.currentIntention.status === "completed" ||
-				beliefs.currentIntention.status === "failed") {
+				beliefs.currentIntention.status === "failed" ||
+				beliefs.currentIntention.status === "stopped") {
 				await change_plan(intention);
+			} else {
+				console.log("intentionRevision_simple : did not change intention");
+				console.log("revision completed");
+				beliefs.revision_running = false;
 			}
 		}
 	} else {
 		console.log("intentionRevision_simple : did not change intention");
+		console.log("revision completed");
+		beliefs.revision_running = false;
 	}
 }

@@ -8,7 +8,7 @@ import DefaultIntention from "../intentions/DefaultIntention.js";
  * This will just sort by possible reward.
  * @param {BeliefSet} beliefs
  * @param {DesireSet} desires
- * @return {Intention}
+ * @return {Promise<Intention>}
  */
 export async function deliberate_simple(beliefs, desires) {
 	console.log("deliberate_simple");
@@ -26,7 +26,7 @@ export async function deliberate_simple(beliefs, desires) {
  * intention it has also to calculate a possible put down.
  * @param {BeliefSet} beliefs
  * @param {DesireSet} desires
- * @return {Intention}
+ * @return {Promise<Intention>}
  */
 export async function deliberate_precise(beliefs, desires) {
 	console.log("deliberate_precise");

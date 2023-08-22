@@ -28,11 +28,6 @@ export async function plan_simple(beliefs) {
 
 		path_to_actions(beliefs.my_position(),intention.possible_path).forEach((a) => {plan.actions.push(a)});
 		plan.actions.push(new PutDown(intention.parcels_id));
-		/*console.log("my position" + beliefs.my_position());
-		console.log("path-------");
-		console.log(intention.possible_path);
-		console.log("plan-------");
-		console.log(plan);*/
 	}
 
 	if(intention instanceof GoPickUp) {
@@ -43,11 +38,6 @@ export async function plan_simple(beliefs) {
 
 		path_to_actions(beliefs.my_position(),intention.possible_path).forEach((a) => {plan.actions.push(a)});
 		plan.actions.push(new PickUp(intention.parcel_id));
-		/*console.log("my position" + beliefs.my_position());
-		console.log("path-------");
-		console.log(intention.possible_path);
-		console.log("plan-------");
-		console.log(plan);*/
 	}
 	
 	if(intention instanceof DefaultIntention || intention === undefined) {

@@ -55,7 +55,11 @@ export default class Executor {
 						//console.log("Executor.execute_plan : action failed again -> retries remaining " + retries);
 					}
 				}
-				if(!result) return "failed";
+				if(!result) {
+					this.currentPlan = undefined;
+					this.stopped = true;
+					return "failed";
+				}
 			}
 
 			if(this.stopped){
