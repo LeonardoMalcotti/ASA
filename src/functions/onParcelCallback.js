@@ -50,7 +50,7 @@ export async function onParcelCallback_simple(parcels, beliefs, reviseIntention)
                 continue;
             }
 
-            if(existing_belief.held_by !== ""){
+            if(existing_belief.held_by !== null){
                 beliefs.deleteParcelBelief(existing_belief);
                 continue;
             }

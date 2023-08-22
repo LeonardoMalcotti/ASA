@@ -17,7 +17,7 @@ export default class PutDown extends Action {
 	 * @return {Promise<number[]>}
 	 */
 	async execute(client){
-		console.log("execute: PutDown");
+		//console.log("execute: PutDown");
 		return client.putdown(this.parcels_id);
 	}
 }

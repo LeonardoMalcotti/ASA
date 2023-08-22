@@ -10,38 +10,38 @@ import DefaultIntention from "../intentions/DefaultIntention.js";
  * @param {IntentionRevisionCompletion} completion
  */
 export async function intentionRevision_simple(beliefs,
-                                         currentIntention,
-                                         optionsGeneration,
-                                         optionsFiltering,
-                                         deliberate,
+                                               optionsGeneration,
+                                               optionsFiltering,
+                                               deliberate,
                                                revision_running,
-                                         completion){
+                                               completion){
 	
 	if(revision_running){
+		console.warn("concurrent revision blocked------------------------------------");
 		return;
 	}
 	
 	revision_running = true;
 	
-	console.log("intentionRevision_simple : current intention -> " + currentIntention.description());
+	console.log("intentionRevision_simple : current intention -> " + beliefs.currentIntention.description());
 	
-	let current_intention_achievable = await currentIntention.achievable(beliefs);
+	let current_intention_achievable = await beliefs.currentIntention.achievable(beliefs);
 	
 	// in this case the current intention has to be changed
-	if (currentIntention instanceof DefaultIntention || !current_intention_achievable)
+	if (beliefs.currentIntention instanceof DefaultIntention || !current_intention_achievable)
 	{
-		let options = optionsGeneration(beliefs,currentIntention);
-		let filtered = await optionsFiltering(beliefs,currentIntention,options);
-		let intention = deliberate(beliefs,currentIntention,filtered);
+		let options = optionsGeneration(beliefs);
+		let filtered = await optionsFiltering(beliefs,options);
+		let intention = await deliberate(beliefs,filtered);
 		
-		if(intention !== undefined) {
+		if(!intention instanceof DefaultIntention){
 			completion(intention);
-		} else if (!currentIntention instanceof DefaultIntention) {
-			completion(new DefaultIntention());
+		} else {
+			if(beliefs.currentIntention.achieved) {
+				completion(intention);
+			}
 		}
 	} else {
 		console.log("intentionRevision_simple : did not change intention");
 	}
-	
-	revision_running = false;
 }

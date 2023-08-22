@@ -2,7 +2,6 @@ import BeliefSet from "./classes/BeliefSet.js";
 import {DeliverooApi} from "@unitn-asa/deliveroo-js-client";
 import config from "../config.js";
 import Executor from "./classes/Executor.js";
-import DefaultIntention from "./intentions/DefaultIntention.js";
 
 export default class Agent {
     
@@ -17,8 +16,6 @@ export default class Agent {
 
     /**@type {BeliefSet} */
     #beliefSet;
-    /**@type {Intention} */
-    #currentIntention;
 
     /**@type {OnMapCallback} */
     #onMapCallback;
@@ -43,7 +40,7 @@ export default class Agent {
     async start(){
         this.#started = true;
         this.#executor.stop_plan();
-        this.#executor.set_new_plan(await this.#planner(this.#beliefSet,this.#currentIntention));
+        this.#executor.set_new_plan(await this.#planner(this.#beliefSet));
         return this.#executor.execute_plan();
     }
     
@@ -53,27 +50,10 @@ export default class Agent {
      */
     async changePlan(new_intention){
         console.log("changePlan : new intention -> " + new_intention.description());
-        this.#currentIntention = new_intention;
+        this.#beliefSet.currentIntention = new_intention;
         this.#executor.stop_plan();
-        this.#executor.set_new_plan(await this.#planner(this.#beliefSet,this.#currentIntention));
+        this.#executor.set_new_plan(await this.#planner(this.#beliefSet));
         console.log("changePlan : plan changed");
-        /*let res = await this.#executor.execute_plan();
-        if(res === "completed" || res === "failed"){
-            if(res === "completed"){
-                this.#currentIntention.achieved = true;
-            }
-            this.#intentionRevision(
-                this.#beliefSet,
-                this.#currentIntention,
-                this.#optionsGeneration,
-                this.#optionsFiltering,
-                this.#deliberate,
-                (intention) => {
-                    if (intention === undefined) console.error("execute_plan.then : passed an undefined intention");
-                    this.changePlan(intention);
-                }
-            );
-        }*/
     }
 
     /**
@@ -97,7 +77,6 @@ export default class Agent {
 
         this.#apiClient = new DeliverooApi( config.host, config.token );
         this.#beliefSet = new BeliefSet();
-        this.#currentIntention = new DefaultIntention();
         this.#onMapCallback = onMapCallback;
         this.#onAgentCallback = onAgentCallback;
         this.#onParcelCallback = onParcelCallback;
@@ -114,31 +93,37 @@ export default class Agent {
     last_plan_status = "None";
     
     async loop(){
-        
+        this.#revision_running = false;
         if(this.#executor.stopped && this.#executor.to_be_executed){
             this.last_plan_status = await this.#executor.execute_plan();
         }
         
         if(this.last_plan_status === "completed" || this.last_plan_status === "failed"){
-            this.#currentIntention.achieved = true;
-            this.#intentionRevision(
-                this.#beliefSet,
-                this.#currentIntention,
-                this.#optionsGeneration,
-                this.#optionsFiltering,
-                this.#deliberate,
-                this.#revision_running,
-                async (intention) => {
-                    this.changePlan(intention).then(() => {
-                        this.loop();
-                    })
-                }
-            );
+            this.#beliefSet.currentIntention.achieved = true;
+            this.revision();
         }
         
         if(this.last_plan_status === "invalid"){
             console.log("invalid status");
         }
+    }
+    
+    revision(){
+        this.#intentionRevision(
+            this.#beliefSet,
+            this.#optionsGeneration,
+            this.#optionsFiltering,
+            this.#deliberate,
+            this.#revision_running,
+            async (intention) => {
+                this.changePlan(intention).then(() => {
+                    this.loop();
+                })
+            }
+        ).then(()=>{
+            console.log("revision finished");
+            this.#revision_running = false;
+        });
     }
 
     async configure() {
@@ -146,7 +131,11 @@ export default class Agent {
             this.#beliefSet.me = you;
             
             if(!this.#started) {
-                await this.loop();
+                console.log("starting")
+                this.#started = true;
+                this.changePlan(this.#beliefSet.currentIntention).then(() => {
+                    this.loop();
+                });
             }
         });
         
@@ -158,19 +147,7 @@ export default class Agent {
 
         this.#apiClient.onParcelsSensing((parcels) =>
             this.#onParcelCallback(parcels,this.#beliefSet,() => {
-                this.#intentionRevision(
-                    this.#beliefSet,
-                    this.#currentIntention,
-                    this.#optionsGeneration,
-                    this.#optionsFiltering,
-                    this.#deliberate,
-                    this.#revision_running,
-                    async (intention) => {
-                        this.changePlan(intention).then(() => {
-                            this.loop();
-                        });
-                    }
-                );
+                this.revision();
             })
         );
 

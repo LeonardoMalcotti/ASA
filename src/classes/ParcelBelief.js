@@ -59,7 +59,7 @@ export default class ParcelBelief {
      * @return ParcelBelief
      */
     static fromParcelData(data) {
-        return new ParcelBelief(data.id, new Position(data.x,data.y),data.carriedBy === null ? "" : data.carriedBy,data.reward, Date.now(), 1);
+        return new ParcelBelief(data.id, new Position(data.x,data.y),data.carriedBy,data.reward, Date.now(), 1);
     }
 
     /**

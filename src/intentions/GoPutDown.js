@@ -50,10 +50,10 @@ export default class GoPutDown extends Intention {
 		}*/
 		
 		let res = await Promise.all(this.parcels_id.map((id) => this.achievable_filter(beliefs,id)));
-		console.log(res);
+		//console.log(res);
 		this.parcels_id = this.parcels_id.filter((v,i) => res[i]);
 		
-		console.log(this.parcels_id);
+		//console.log(this.parcels_id);
 		return this.parcels_id.length !== 0;
 	}
 	

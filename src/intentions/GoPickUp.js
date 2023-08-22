@@ -38,14 +38,14 @@ export default class GoPickUp extends Intention{
 	 * @return {Promise<boolean>}
 	 */
 	async achievable(beliefs) {
-		if(this.achieved === true) return false;
+		if(this.achieved) return false;
 		
 		let parcel = beliefs.getParcelBelief(this.parcel_id);
 		if(parcel === undefined) {
 			return false;
 		}
 
-		if (parcel.held_by !== "") {
+		if (parcel.held_by !== null) {
 			return false;
 		}
 
@@ -54,7 +54,7 @@ export default class GoPickUp extends Intention{
 			return false;
 		}
 
-		this.possible_path = await calculate_path(beliefs, beliefs.my_position(), this.position);
+		this.possible_path = await calculate_path(beliefs, beliefs.my_position(), parcel.position);
 
 		if (this.possible_path === []) {
 			return false;

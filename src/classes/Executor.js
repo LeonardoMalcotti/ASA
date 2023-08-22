@@ -40,6 +40,7 @@ export default class Executor {
 			let retries = 3;
 			let result = await action.execute(this.client);
 			
+			// retry the action max 3 times
 			if(!result) {
 				//console.log("Executor.execute_plan : action failed");
 				while(retries > 0){

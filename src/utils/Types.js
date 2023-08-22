@@ -44,14 +44,12 @@
 /**
  * @callback OptionsGeneration
  * @param {BeliefSet} beliefs
- * @param {Intention} currentIntention
  * @return {DesireSet}
  */
 
 /**
  * @callback OptionsFiltering
  * @param {BeliefSet} beliefs
- * @param {Intention} currentIntention
  * @param {DesireSet} desires
  * @return {DesireSet}
  */
@@ -59,7 +57,6 @@
 /**
  * @callback Deliberate
  * @param {BeliefSet} beliefs
- * @param {Intention} currentIntention
  * @param {DesireSet} desires
  * @return {Intention}
  */
@@ -73,7 +70,6 @@
 /**
  * @callback IntentionRevision
  * @param {BeliefSet} beliefs
- * @param {Intention} currentIntention
  * @param {OptionsGeneration} optionsGeneration
  * @param {OptionsFiltering} optionsFiltering
  * @param {Deliberate} deliberate
@@ -121,7 +117,6 @@
 /**
  * @callback Planner
  * @param {BeliefSet} beliefs
- * @param {Intention} intention
  * @return {Plan}
  */
 

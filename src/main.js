@@ -4,7 +4,7 @@ import {onAgentCallback_simple} from "./functions/onAgentCallback.js";
 import {onParcelCallback_simple} from "./functions/onParcelCallback.js";
 import {optionsGeneration_simple} from "./functions/OptionsGeneration.js";
 import {optionFiltering} from "./functions/OptionFiltering.js";
-import {deliberate_simple} from "./functions/Deliberate.js";
+import {deliberate_precise} from "./functions/Deliberate.js";
 import {intentionRevision_simple} from "./functions/IntentionRevision.js";
 import {plan_simple} from "./functions/Planning.js";
 
@@ -14,7 +14,7 @@ let agent = new Agent(
 	onParcelCallback_simple,
 	optionsGeneration_simple,
 	optionFiltering,
-	deliberate_simple,
+	deliberate_precise,
 	intentionRevision_simple,
 	plan_simple
 );

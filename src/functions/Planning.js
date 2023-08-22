@@ -16,9 +16,10 @@ import calculate_random_path from "../utils/standard_path.js";
  * @param {BeliefSet} beliefs
  * @param {Intention} intention
  */
-export async function plan_simple(beliefs, intention) {
+export async function plan_simple(beliefs) {
 	let plan = new Plan();
-
+	let intention = beliefs.currentIntention;
+	
 	if(intention instanceof GoPutDown) {
 		console.log("plan_simple : planning a put down");
 		if(intention.possible_path === undefined){

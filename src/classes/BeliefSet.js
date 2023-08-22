@@ -1,5 +1,6 @@
 import {TileMap} from "./TileMap.js";
 import Position from "./Position.js";
+import DefaultIntention from "../intentions/DefaultIntention.js";
 
 export default class BeliefSet {
 
@@ -13,12 +14,15 @@ export default class BeliefSet {
     agentBeliefs;
     /** @type {ParcelBelief[]} */
     parcelBeliefs;
+    /**@type {Intention} */
+    currentIntention;
 
     constructor() {
         this.mapBeliefs = new TileMap();
         this.agentBeliefs = [];
         this.parcelBeliefs = [];
         this.me = {};
+        this.currentIntention = new DefaultIntention();
     }
 
     /**
