@@ -11,7 +11,7 @@ export class Intention {
      */
     possible_reward;
     /**
-     * @type {("failed" | "completed" | "executing" | "new")}
+     * @type {("failed" | "stopped" | "completed" | "executing" | "new")}
      */
     status;
 

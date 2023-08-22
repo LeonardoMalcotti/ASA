@@ -1,6 +1,10 @@
 import Action from "./Action.js";
 
 export default class GoRight extends Action {
+	constructor() {
+		super();
+	}
+	
 	/**
 	 * @param {DeliverooApi} client
 	 * @return {Promise<{x: number, y: number} | "false">}

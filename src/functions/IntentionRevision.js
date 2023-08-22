@@ -1,6 +1,7 @@
 import DefaultIntention from "../intentions/DefaultIntention.js";
 
 /**
+ * stubborn (?)
  * @param {BeliefSet} beliefs
  * @param {OptionsGeneration} optionsGeneration
  * @param {OptionsFiltering} optionsFiltering
@@ -13,10 +14,7 @@ export async function intentionRevision_simple(beliefs,
                                                deliberate,
                                                change_plan){
 	
-	if(beliefs.revision_running){
-		return;
-	}
-	
+	if(beliefs.revision_running) return;
 	beliefs.revision_running = true;
 	
 	console.log("intentionRevision_simple : current intention -> " + beliefs.currentIntention.description());

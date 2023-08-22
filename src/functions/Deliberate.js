@@ -3,6 +3,12 @@ import {calculate_path} from "../utils/astar.js";
 import GoPickUp from "../intentions/GoPickUp.js";
 import DefaultIntention from "../intentions/DefaultIntention.js";
 
+/**
+ * A deliberate function should take as input the current beliefs and a list of intentions (desires)
+ * and return an intention from the ones given, or a default intention in case there are no desires
+ * or if after another filtering there are not available ones.
+ */
+
 
 /**
  * This will just sort by possible reward.
@@ -17,9 +23,6 @@ export async function deliberate_simple(beliefs, desires) {
 	return desires.intentions.pop();
 }
 
-
-
-
 /**
  * The precise implementation of the deliberation function will compute all the shortest path for each pick up and put
  * down intentions, calculating so which one will give the most reward if completed, considering that for the pick up
@@ -32,7 +35,6 @@ export async function deliberate_precise(beliefs, desires) {
 	console.log("deliberate_precise");
 	let res = await Promise.all(desires.intentions
 		.map(async (i) => {
-			
 			if(i instanceof GoPickUp){
 				let parcel = beliefs.getParcelBelief(i.parcel_id);
 				let dist = await distance_to_the_nearest_delivery(beliefs, i.parcel_id);
@@ -42,7 +44,6 @@ export async function deliberate_precise(beliefs, desires) {
 					i.possible_reward = parcel.reward_after_n_steps(beliefs,i.possible_path.length + dist);
 				}
 			}
-			
 			return i;
 		}));
 	res = res.filter((i) => i.possible_reward > 0).sort((i1,i2) => i1.possible_reward - i2.possible_reward);
