@@ -33,3 +33,12 @@ export function remove_from_list(list,element){
 export function optimal_distance(from, to){
 	return Math.abs(from.x - to.x) + Math.abs(from.y - from.y);
 }
+
+/**
+ *
+ * @param {Position} p1
+ * @param {Position} p2
+ */
+export function same_position(p1, p2){
+	return p1.y === p2.y && p1.x === p2.x;
+}

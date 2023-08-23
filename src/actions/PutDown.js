@@ -7,7 +7,7 @@ export default class PutDown extends Action {
 	/**
 	 * @param {string[]} parcels_id
 	 */
-	constructor(parcels_id) {
+	constructor(parcels_id = undefined) {
 		super();
 		this.parcels_id = parcels_id;
 	}
@@ -15,9 +15,10 @@ export default class PutDown extends Action {
 	/**
 	 * @param {DeliverooApi} client
 	 * @param {BeliefSet} beliefs
+	 * @param {Plan} plan
 	 * @return {Promise<{x: number, y: number} | "false">}
 	 */
-	async execute(client, beliefs){
+	async execute(client, beliefs, plan){
 		let res = await client.putdown(this.parcels_id);
 		for(let p of res){
 			beliefs.deleteParcelBeliefById(p.id);

@@ -1,23 +1,27 @@
 import Action from "./Action.js";
 
 export default class PickUp extends Action {
-	/** @type {string} */
-	parcel_id;
-
 	/**
 	 * @param {string} parcel_id
 	 */
-	constructor(parcel_id) {
+	constructor() {
 		super();
-		this.parcel_id = parcel_id;
 	}
 	
 	/**
 	 * @param {DeliverooApi} client
 	 * @param {BeliefSet} beliefs
+	 * @param {Plan} plan
 	 * @return {Promise<{x: number, y: number} | "false">}
 	 */
-	async execute(client, beliefs){
+	async execute(client, beliefs, plan){
+		let res = await client.pickup();
+		for(let p of res){
+			let b = beliefs.getParcelBelief(p);
+			if(b !== undefined){
+				b.held_by = beliefs.me.id;
+			}
+		}
 		//console.log("execute: PickUp");
 		return client.pickup();
 	}

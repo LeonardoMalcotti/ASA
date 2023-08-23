@@ -26,7 +26,8 @@ export async function plan_simple(beliefs) {
 		}
 
 		path_to_actions(beliefs.my_position(),intention.possible_path).forEach((a) => {plan.actions.push(a)});
-		plan.actions.push(new PutDown(intention.parcels_id));
+		//plan.actions.push(new PutDown(intention.parcels_id));
+		plan.actions.push(new PutDown()); // it would make sense to put down everything in this case
 	}
 
 	if(intention instanceof GoPickUp) {
@@ -36,7 +37,7 @@ export async function plan_simple(beliefs) {
 		}
 
 		path_to_actions(beliefs.my_position(),intention.possible_path).forEach((a) => {plan.actions.push(a)});
-		plan.actions.push(new PickUp(intention.parcel_id));
+		plan.actions.push(new PickUp());
 	}
 	
 	if(intention instanceof DefaultIntention || intention === undefined) {

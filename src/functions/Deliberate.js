@@ -46,9 +46,22 @@ export async function deliberate_precise(beliefs, desires) {
 			}
 			return i;
 		}));
-	res = res.filter((i) => i.possible_reward > 0).sort((i1,i2) => i1.possible_reward - i2.possible_reward);
+	
+	res = res.filter((i) => i.possible_reward > 0);
 	if(res.length === 0) return new DefaultIntention();
-	return res.pop();
+	
+	// order the intentions from the one with the least possible reward to the most reward
+	res = res.sort((i1,i2) => i1.possible_reward - i2.possible_reward);
+	
+	// get the reward from the best one
+	let best_reward = res[res.length-1].possible_reward;
+	
+	// get only the intentions with the highest reward
+	res = res.filter((i) => i.possible_reward === best_reward)
+	
+	// sort them by increasing path length and return the first one, which have the shortest path
+	return  res.sort((i1,i2) => i1.possible_path.length - i2.possible_path.length)
+		       .shift();
 }
 
 

@@ -17,7 +17,7 @@ export default class ContinuousExecutor extends Executor{
 				this.status = "executing";
 				let next_action = this.currentPlan.actions.shift();
 				
-				let result = await next_action.execute(this.client, this.beliefs);
+				let result = await next_action.execute(this.client, this.beliefs, this.currentPlan);
 				
 				if(result === false){
 					this.status = "failed";
