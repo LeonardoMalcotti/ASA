@@ -1,5 +1,7 @@
 import {aNode} from "./Types.js";
 import {Tile} from "../classes/Tile.js";
+import {TileMap} from "../classes/TileMap.js";
+import {same_position} from "./Utils.js";
 
 /**
  * @param {Tile} t1
@@ -108,6 +110,26 @@ export async function astar(map,start,goal,heuristic){
  */
 export async function calculate_path(beliefs, from, to){
     let map = beliefs.mapBeliefs;
+    let start = Tile.fromPosition(from);
+    let end = Tile.fromPosition(to);
+    return astar(map,start,end,heuristic);
+}
+
+/**
+ *
+ * @param {BeliefSet} beliefs
+ * @param {Position} from
+ * @param {Position} to
+ */
+export async function calculate_path_considering_nearby_agents(beliefs, from, to){
+    let map = beliefs.mapBeliefs.copy();
+    
+    let nearby_agents_position = beliefs.agentBeliefs.filter((a) => a.probability > 0.8).map((a) => a.position);
+    nearby_agents_position.forEach((p) => {
+        map.tiles.splice(map.tiles.findIndex((t) => same_position(t.toPosition(),p)),1);
+        map.delivery_tiles.splice(map.delivery_tiles.findIndex((t) => same_position(t.toPosition(),p)),1);
+    });
+    
     let start = Tile.fromPosition(from);
     let end = Tile.fromPosition(to);
     return astar(map,start,end,heuristic);

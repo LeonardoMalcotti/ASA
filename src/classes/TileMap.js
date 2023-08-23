@@ -37,4 +37,11 @@ export class TileMap {
             t.x - 1 === tile.x && t.y === tile.y
         ))
     }
+    
+    copy(){
+        let ret = new TileMap();
+        ret.delivery_tiles = this.delivery_tiles.map((d) => d);
+        ret.tiles = this.tiles.map((t) => t);
+        return ret;
+    }
 }

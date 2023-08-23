@@ -54,23 +54,23 @@ export async function plan_simple(beliefs) {
  * @param {Tile[]} path
  * @return {Action[]}
  */
-function path_to_actions(start, path){
+export function path_to_actions(start, path){
 	let actions = [];
 	let previous_position = start;
 
 	for(let t of path){
 		let next_position = t.toPosition();
 		if(previous_position.y < next_position.y){
-			actions.push(new GoUp());
+			actions.push(new GoUp(next_position));
 		}
 		if(previous_position.y > next_position.y){
-			actions.push(new GoDown());
+			actions.push(new GoDown(next_position));
 		}
 		if(previous_position.x < next_position.x){
-			actions.push(new GoRight());
+			actions.push(new GoRight(next_position));
 		}
 		if(previous_position.x > next_position.x){
-			actions.push(new GoLeft());
+			actions.push(new GoLeft(next_position));
 		}
 
 		previous_position = next_position;

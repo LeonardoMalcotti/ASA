@@ -1,5 +1,5 @@
 import {optimal_distance} from "../utils/Utils.js";
-import {calculate_path} from "../utils/astar.js";
+import {calculate_path_considering_nearby_agents} from "../utils/astar.js";
 import GoPickUp from "../intentions/GoPickUp.js";
 import DefaultIntention from "../intentions/DefaultIntention.js";
 
@@ -86,7 +86,7 @@ async function distance_to_the_nearest_delivery(beliefs, parcel_id, heuristic = 
 		let possible_reward = 0;
 
 		if(!heuristic){
-			let possible_path = await calculate_path(beliefs,parcel.position,t.toPosition());
+			let possible_path = await calculate_path_considering_nearby_agents(beliefs,parcel.position,t.toPosition());
 			if(possible_path === []){
 				continue;
 			}

@@ -4,7 +4,7 @@ import {remove_from_list} from "../utils/Utils.js";
 
 
 const PARCEL_PROBABILITY_DECAY = 0.05;
-const PARCEL_PROBABILITY_TRESHOLD = 0.5;
+const PARCEL_PROBABILITY_THRESHOLD = 0.5;
 
 
 /**
@@ -43,7 +43,7 @@ export async function onParcelCallback_simple(parcels, beliefs, reviseIntention)
             
             if (existing_belief.reward <= 0 ||
                 existing_belief.held_by !== null ||
-                existing_belief.probability <= PARCEL_PROBABILITY_TRESHOLD)
+                existing_belief.probability <= PARCEL_PROBABILITY_THRESHOLD)
             { beliefs.deleteParcelBelief(existing_belief); }
         }
     }
@@ -97,7 +97,7 @@ export async function onParcelCallback_always_revise(parcels, beliefs, reviseInt
             
             if (existing_belief.reward <= 0 ||
                 existing_belief.held_by !== null ||
-                existing_belief.probability <= PARCEL_PROBABILITY_TRESHOLD)
+                existing_belief.probability <= PARCEL_PROBABILITY_THRESHOLD)
             { beliefs.deleteParcelBelief(existing_belief); }
         }
     }

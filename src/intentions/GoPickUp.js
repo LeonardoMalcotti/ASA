@@ -1,6 +1,6 @@
 import {Intention} from "./Intention.js";
 import {optimal_distance} from "../utils/Utils.js";
-import {calculate_path} from "../utils/astar.js";
+import {calculate_path_considering_nearby_agents} from "../utils/astar.js";
 
 /**
  * @property {string} parcel_id the id of the parcel to pickup.
@@ -51,7 +51,7 @@ export default class GoPickUp extends Intention{
 		let min_distance = optimal_distance(beliefs.my_position(), this.position);
 		if (parcel.reward_after_n_steps(beliefs, min_distance) <= 0) return false;
 
-		this.possible_path = await calculate_path(beliefs, beliefs.my_position(), parcel.position);
+		this.possible_path = await calculate_path_considering_nearby_agents(beliefs, beliefs.my_position(), parcel.position);
 
 		if (this.possible_path === []) return false;
 
