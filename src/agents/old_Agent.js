@@ -1,9 +1,9 @@
-import BeliefSet from "./classes/BeliefSet.js";
+import BeliefSet from "../classes/BeliefSet.js";
 import {DeliverooApi} from "@unitn-asa/deliveroo-js-client";
-import config from "../config.js";
-import Executor from "./classes/Executor.js";
+import config from "../../config.js";
+import ContinuousExecutor from "../executor/ContinuousExecutor.js";
 
-export default class Agent {
+export default class Old_Agent {
     
     /**@type {boolean} */
     #started
@@ -31,7 +31,7 @@ export default class Agent {
     #intentionRevision;
     /**@type {Planner} */
     #planner;
-    /**@type {Executor} */
+    /**@type {ContinuousExecutor} */
     #executor;
     
     /**
@@ -63,7 +63,7 @@ export default class Agent {
         this.#deliberate = deliberate;
         this.#intentionRevision = intentionRevision;
         this.#planner = planner;
-        this.#executor = new Executor(this.#apiClient,this.#beliefSet);
+        this.#executor = new ContinuousExecutor(this.#apiClient,this.#beliefSet);
         this.#started = false;
     }
     

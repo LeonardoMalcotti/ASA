@@ -1157,7 +1157,7 @@
         <mxCell id="wFQ2TcBDiDL5R_xwylNz-138" value="" style="shape=mxgraph.uml25.inputPin;html=1;points=[[0,0.5],[1,0.5]];direction=north;shadow=0;" vertex="1" parent="wFQ2TcBDiDL5R_xwylNz-119">
           <mxGeometry x="241.5" width="11" height="11" as="geometry" />
         </mxCell>
-        <mxCell id="wFQ2TcBDiDL5R_xwylNz-139" value="Agent belief revision" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=1;collapsible=0;width=160;strokeWidth=2;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+        <mxCell id="wFQ2TcBDiDL5R_xwylNz-139" value="Old_Agent belief revision" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=1;collapsible=0;width=160;strokeWidth=2;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
           <mxGeometry x="2495" y="10" width="400" height="830" as="geometry" />
         </mxCell>
         <mxCell id="wFQ2TcBDiDL5R_xwylNz-140" value="" style="ellipse;fillColor=strokeColor;html=1;shadow=0;" vertex="1" parent="wFQ2TcBDiDL5R_xwylNz-139">

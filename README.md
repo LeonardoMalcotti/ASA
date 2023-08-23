@@ -35,7 +35,7 @@ functions on data that is being kept private.
 
 ### Belief Management Module
 
-Is an aggregator module, that works as a middleware between the *Belief Modules* and the *Agent*.
+Is an aggregator module, that works as a middleware between the *Belief Modules* and the *Old_Agent*.
 It exposes CRUD functions similar to the one exposed by the *Belief Module* connected but apply additional logic to
 the data in input to adjust the new beliefs and to update multiple modules at the same time.
 
@@ -71,7 +71,7 @@ At each event (onAgentSensing, onParcelSensing) the agent has to revise its beli
         - we could also completely ignore it and remove it.
 - if the believed score reach 0 remove the belief about the parcel.
 
-#### Revision after Agent event
+#### Revision after Old_Agent event
 
 - increase the agent event logical clock.
 - add to current beliefs the agents sensed.
