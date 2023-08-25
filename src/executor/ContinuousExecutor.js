@@ -2,7 +2,7 @@ import Executor from "./Executor.js";
 import {MovementAction} from "../actions/MovementAction.js";
 import {calculate_path_considering_nearby_agents} from "../utils/astar.js";
 import {same_position} from "../utils/Utils.js";
-import {path_to_actions} from "../functions/Planning.js";
+import {path_to_actions} from "../planning/Planning.js";
 
 export default class ContinuousExecutor extends Executor{
 	
