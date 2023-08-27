@@ -17,7 +17,7 @@ export default class PDDLDomain {
 	 */
 	constructor(domain,predicates, actions, types = []) {
 		this.domain = domain;
-		this.requirements = ["strips" , "typing"];
+		this.requirements = ["strips" , "typing", "disjunctive-preconditions"];
 		this.predicates = predicates;
 		this.actions = actions;
 		this.types = types;

@@ -8,6 +8,7 @@ import {plan_simple} from "./planning/Planning.js";
 import {onParcelCallback_simple} from "./sensing/onParcelCallback.js";
 import Agent from "./agents/Agent.js";
 import plan_pddl from "./planning/PDDLPlanning.js";
+import plan_pddl_2 from "./planning/PDDLPlanning_fewer_predicates.js";
 
 let tokens = [
 	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRhMzExZmQxMWM5IiwibmFtZSI6ImExIiwiaWF0IjoxNjkyNzg5ODA2fQ.mvSsAbQ8AzAhGUsh5lVPh5ozo2-67gqfcCJ8hrZ0eGQ",
@@ -42,7 +43,7 @@ let agent = new Agent(
 	optionFiltering,
 	deliberate_precise,
 	intentionRevision_non_stubborn,
-	plan_pddl
+	plan_pddl_2
 );
 await agent.configure(120000);
 
