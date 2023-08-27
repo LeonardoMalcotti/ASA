@@ -31,4 +31,8 @@ export class Tile {
     static fromPosition(position){
         return new Tile(position.x,position.y);
     }
+    
+    hash(){
+        return "t" + this.x + "-" + this.y;
+    }
 }

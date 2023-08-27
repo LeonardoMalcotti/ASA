@@ -10,15 +10,19 @@ export default class PDDLProblem {
 	init;
 	/** @type {PDDLCondition} */
 	goal;
+	/** @type {string[]} */
+	types;
 	
 	/**
 	 * @param {string} problem
-	 * @param {string} domain
+	 * @param {PDDLDomain} domain
 	 * @param {PDDLStatement[]} init
 	 * @param {PDDLCondition} goal
 	 */
 	constructor(problem, domain, init, goal) {
-		this.domain = domain;
+		this.problem = problem;
+		this.domain = domain.domain;
+		this.types = domain.types;
 		this.init = init;
 		this.goal = goal;
 		this.objects = [];
@@ -34,6 +38,8 @@ export default class PDDLProblem {
 		let objects_str = "(:objects " + this.objects.join(" ") + ")";
 		let init_str = "(:init " + this.init.map((i) => i.toPddlString()).join(" ") + ")";
 		let goal_str = "(:goal " + this.goal.toPddlString() + ")";
+		//let type_str = this.types.length !== 0 ? "(:types " + this.types.join(" ") + ")" : "";
+		
 		
 		return "(define " + problem_str + " " + domain_str + " " + objects_str + " " + init_str + " " + goal_str + ")";
 	}

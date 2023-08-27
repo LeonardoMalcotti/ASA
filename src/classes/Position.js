@@ -15,6 +15,19 @@ export default class Position {
     description(){
         return "[ x : " + this.x + ", y : " + this.y + " ]";
     }
+    
+    hash(){
+        return "t" + this.x + "-" + this.y;
+    }
+    
+    /**
+     * @param {string} hash
+     */
+    static fromHash(hash){
+        let st = hash.substring(1);
+        let coord = st.split("-").map((c) => Number(c));
+        return new Position(coord[0], coord[1]);
+    }
 }
 
 /**

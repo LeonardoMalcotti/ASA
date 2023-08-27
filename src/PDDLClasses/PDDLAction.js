@@ -24,8 +24,8 @@ export default class PDDLAction {
 	toPddLString(){
 		let action_str = ":action " + this.action;
 		let parameter_str = ":parameters (" + this.parameters.map((p) => p.toPddlString()).join(" ") + ")";
-		let precondition_str = ":precondition " + this.preconditions.toPddlString();
-		let effect_str = ":effect " + this.effect.toPddlString();
+		let precondition_str = ":precondition " + this.preconditions.toPddlString(true);
+		let effect_str = ":effect " + this.effect.toPddlString(true);
 		
 		return "("+action_str + " " + parameter_str + " " + precondition_str + " " + effect_str + ")";
 	}

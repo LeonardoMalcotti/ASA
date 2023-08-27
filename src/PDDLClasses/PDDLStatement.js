@@ -1,8 +1,10 @@
+import PDDLVariable from "./PDDLVariable.js";
 
 export default class PDDLStatement {
 	predicate = "";
 	/** @type {(PDDLVariable | string)[]} */
 	parameters;
+	parameters_type = [];
 	negated = false;
 	
 	/**
@@ -17,28 +19,37 @@ export default class PDDLStatement {
 			this.parameters = [];
 		} else {
 			this.parameters = parameters;
+			this.parameters_type = parameters.map((p) => p.type);
 		}
 	}
 	
-	toPddlString(){
-		return (this.negated? "(not " : "") + "("+this.predicate + " " + this.parameters.map((v) => (v instanceof PDDLVariable? v.toPddlString() : v )).join(" ")+")" + (this.negated? ")" : "");
+	toPddlString(notype = false){
+		return (this.negated? "(not " : "") + "("+this.predicate + " " + this.parameters.map((v) => (v instanceof PDDLVariable? v.toPddlString(notype) : v )).join(" ")+")" + (this.negated? ")" : "");
 	}
 	
 	/**
 	 * @param {(PDDLVariable | string)[]} vars
 	 */
 	with(vars){
-		return new PDDLStatement(this.predicate, vars);
+		let ret = new PDDLStatement(this.predicate, vars);
+		ret.parameters_type = this.parameters_type;
+		return ret;
 	}
 	
 	not(){
-		return new PDDLStatement(this.predicate,this.parameters,!this.negated);
+		let ret =new PDDLStatement(this.predicate,this.parameters,!this.negated);
+		ret.parameters_type = this.parameters_type;
+		return ret;
 	}
 	
 	/**
 	 * @return {(string)[]}
 	 */
 	objects(){
-		return this.parameters.filter((p) => !(p instanceof PDDLVariable));
+		let obj = this.parameters.filter((p) => !(p instanceof PDDLVariable));
+		if(this.parameters_type.length !== 0){
+			obj = obj.map((o,i) => o + " - " + this.parameters_type[i]);
+		}
+		return obj;
 	}
 }

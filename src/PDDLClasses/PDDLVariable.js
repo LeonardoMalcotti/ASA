@@ -7,12 +7,12 @@ export default class PDDLVariable {
 	 * @param {string} name
 	 * @param {string} type
 	 */
-	constructor(name, type = undefined) {
+	constructor(name, type = "") {
 		this.name = name;
 		this.type = type;
 	}
 	
-	toPddlString(){
-		return "?" + this.name + (this.type !== undefined? " - " + this.type : "");
+	toPddlString(notype = false){
+		return "?" + this.name + ((this.type !== "" && !notype)? " - " + this.type : "");
 	}
 }

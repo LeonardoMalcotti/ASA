@@ -42,7 +42,8 @@ export default class ContinuousExecutor extends Executor{
 					}
 				} else {
 					console.log("ActionLoop : executed action");
-					if(this.currentPlan.actions.length === 0){
+					if(this.currentPlan !== undefined &&
+						this.currentPlan.actions.length === 0){
 						this.status = "completed";
 					}
 				}
