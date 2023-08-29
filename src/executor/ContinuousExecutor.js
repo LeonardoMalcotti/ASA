@@ -4,6 +4,7 @@ import {calculate_path_considering_nearby_agents} from "../utils/astar.js";
 import {same_position} from "../utils/Utils.js";
 
 import {path_to_actions} from "../planning/utils.js";
+import {EXECUTOR_LOG} from "../../config.js";
 
 export default class ContinuousExecutor extends Executor{
 	
@@ -18,32 +19,31 @@ export default class ContinuousExecutor extends Executor{
 	
 	async action_loop(){
 		while(this.abort === false){
-			if(this.currentPlan !== undefined && this.currentPlan.actions.length !== 0){
+			if(this.beliefs.currentPlan !== undefined && this.beliefs.currentPlan.actions.length !== 0){
 				this.status = "executing";
-				let next_action = this.currentPlan.actions.shift();
+				let next_action = this.beliefs.currentPlan.actions.shift();
 				
-				let result = await next_action.execute(this.client, this.beliefs, this.currentPlan);
+				let result = await next_action.execute(this.client, this.beliefs);
 				
 				if(result === false){
-					console.log("ActionLoop : failed action");
+					if(EXECUTOR_LOG) console.log("ActionLoop : failed action");
 					if (next_action instanceof MovementAction){
-						console.log("ActionLoop : calculate avoidance path");
+						if(EXECUTOR_LOG) console.log("ActionLoop : calculate avoidance path");
 						let res = await avoid_obstacle(
 							this.beliefs,
-							this.currentPlan,
 							next_action
 						);
 						
 						if(res === false){
-							console.log("ActionLoop : no avoidance path");
+							if(EXECUTOR_LOG) console.log("ActionLoop : no avoidance path");
 							this.status = "failed";
 							this.currentPlan = undefined;
 						}
 					}
 				} else {
-					console.log("ActionLoop : executed action");
+					if(EXECUTOR_LOG) console.log("ActionLoop : executed action");
 					if(this.currentPlan !== undefined &&
-						this.currentPlan.actions.length === 0){
+						this.beliefs.currentPlan.actions.length === 0){
 						this.status = "completed";
 					}
 				}
@@ -60,7 +60,9 @@ export default class ContinuousExecutor extends Executor{
  * @param {Plan} plan
  * @param {Action} failed_action
  */
-async function avoid_obstacle(beliefs, plan, failed_action){
+async function avoid_obstacle(beliefs, failed_action){
+	let plan = beliefs.currentPlan;
+	
 	if(plan.actions.length === 0) return false;
 	
 	if(plan[0] instanceof MovementAction){

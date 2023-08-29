@@ -1,4 +1,5 @@
 import DefaultIntention from "../intentions/DefaultIntention.js";
+import {REVISION_LOG} from "../../config.js";
 
 /**
  * stubborn (?)
@@ -17,10 +18,10 @@ export async function intentionRevision_simple(beliefs,
 	if(beliefs.revision_running) return;
 	beliefs.revision_running = true;
 	
-	console.log("intentionRevision_simple : current intention -> " + beliefs.currentIntention.description());
+	if(REVISION_LOG) console.log("intentionRevision_simple : current intention -> " + beliefs.currentIntention.description());
 	
 	let current_intention_achievable = await beliefs.currentIntention.achievable(beliefs);
-	if(current_intention_achievable) console.log("intentionRevision_simple : intention still achievable");
+	if(current_intention_achievable) if(REVISION_LOG) console.log("intentionRevision_simple : intention still achievable");
 	
 	// in this case the current intention has to be changed
 	if (beliefs.currentIntention instanceof DefaultIntention ||
@@ -38,14 +39,14 @@ export async function intentionRevision_simple(beliefs,
 				beliefs.currentIntention.status === "stopped") {
 				await change_plan(intention);
 			} else {
-				console.log("intentionRevision_simple : did not change intention");
-				console.log("revision completed");
+				if(REVISION_LOG) console.log("intentionRevision_simple : did not change intention");
+				if(REVISION_LOG) console.log("revision completed");
 				beliefs.revision_running = false;
 			}
 		}
 	} else {
-		console.log("intentionRevision_simple : did not change intention");
-		console.log("revision completed");
+		if(REVISION_LOG) console.log("intentionRevision_simple : did not change intention");
+		if(REVISION_LOG) console.log("revision completed");
 		beliefs.revision_running = false;
 	}
 }
@@ -67,10 +68,10 @@ export async function intentionRevision_non_stubborn(beliefs,
 	if(beliefs.revision_running) return;
 	beliefs.revision_running = true;
 	
-	console.log("intentionRevision_simple : current intention -> " + beliefs.currentIntention.description());
+	if(REVISION_LOG) console.log("intentionRevision_simple : current intention -> " + beliefs.currentIntention.description());
 	
 	let current_intention_achievable = await beliefs.currentIntention.achievable(beliefs);
-	if(current_intention_achievable) console.log("intentionRevision_simple : intention still achievable");
+	if(current_intention_achievable) if(REVISION_LOG) console.log("intentionRevision_simple : intention still achievable");
 	
 	let options = optionsGeneration(beliefs);
 	let filtered = await optionsFiltering(beliefs,options);
@@ -94,8 +95,8 @@ export async function intentionRevision_non_stubborn(beliefs,
 		beliefs.currentIntention.status === "stopped") {
 		await change_plan(intention);
 	} else {
-		console.log("intentionRevision_simple : did not change intention");
-		console.log("revision completed");
+		if(REVISION_LOG) console.log("intentionRevision_simple : did not change intention");
+		if(REVISION_LOG) console.log("revision completed");
 		beliefs.revision_running = false;
 	}
 }

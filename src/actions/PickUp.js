@@ -11,10 +11,9 @@ export default class PickUp extends Action {
 	/**
 	 * @param {DeliverooApi} client
 	 * @param {BeliefSet} beliefs
-	 * @param {Plan} plan
 	 * @return {Promise<{x: number, y: number} | "false">}
 	 */
-	async execute(client, beliefs, plan){
+	async execute(client, beliefs){
 		let res = await client.pickup();
 		for(let p of res){
 			let b = beliefs.getParcelBelief(p);

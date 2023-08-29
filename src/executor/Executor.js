@@ -1,6 +1,6 @@
+import Plan from "../actions/Plan.js";
+
 export default class Executor {
-	/** @type {Plan} */
-	currentPlan;
 	/** @type {DeliverooApi} */
 	client;
 	/** @type {BeliefSet} */
@@ -30,11 +30,11 @@ export default class Executor {
 	 * @param {Plan} plan
 	 */
 	set_new_plan(plan){
-		this.currentPlan = plan;
+		this.beliefs.currentPlan = plan;
 	}
 	
 	stop_plan(){
-		this.currentPlan = undefined;
+		this.beliefs.currentPlan.actions = [];
 	}
 	
 	abort_execution(){

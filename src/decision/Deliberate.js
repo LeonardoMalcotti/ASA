@@ -2,6 +2,7 @@ import {optimal_distance} from "../utils/Utils.js";
 import {calculate_path_considering_nearby_agents} from "../utils/astar.js";
 import GoPickUp from "../intentions/GoPickUp.js";
 import DefaultIntention from "../intentions/DefaultIntention.js";
+import {DELIBERATE_LOG} from "../../config.js";
 
 /**
  * A deliberate function should take as input the current beliefs and a list of intentions (desires)
@@ -17,7 +18,7 @@ import DefaultIntention from "../intentions/DefaultIntention.js";
  * @return {Promise<Intention>}
  */
 export async function deliberate_simple(beliefs, desires) {
-	console.log("deliberate_simple");
+	if(DELIBERATE_LOG) console.log("deliberate_simple");
 	if(desires.intentions.length === 0) return new DefaultIntention();
 	desires.intentions.sort((i1,i2) => i1.possible_reward - i2.possible_reward);
 	return desires.intentions.pop();
@@ -32,7 +33,7 @@ export async function deliberate_simple(beliefs, desires) {
  * @return {Promise<Intention>}
  */
 export async function deliberate_precise(beliefs, desires) {
-	console.log("deliberate_precise");
+	if(DELIBERATE_LOG) console.log("deliberate_precise");
 	let res = await Promise.all(desires.intentions
 		.map(async (i) => {
 			if(i instanceof GoPickUp){

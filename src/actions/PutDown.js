@@ -15,10 +15,9 @@ export default class PutDown extends Action {
 	/**
 	 * @param {DeliverooApi} client
 	 * @param {BeliefSet} beliefs
-	 * @param {Plan} plan
 	 * @return {Promise<{x: number, y: number} | "false">}
 	 */
-	async execute(client, beliefs, plan){
+	async execute(client, beliefs){
 		let res = await client.putdown(this.parcels_id);
 		for(let p of res){
 			beliefs.deleteParcelBeliefById(p.id);

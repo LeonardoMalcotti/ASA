@@ -1,7 +1,9 @@
 import BeliefSet from "../classes/BeliefSet.js";
 import {DeliverooApi} from "@unitn-asa/deliveroo-js-client";
-import config from "../../config.js";
+import config, {AGENT_LOG} from "../../config.js";
 import ContinuousExecutor from "../executor/ContinuousExecutor.js";
+
+
 
 export default class Agent {
 	
@@ -22,6 +24,8 @@ export default class Agent {
 	#onAgentCallback;
 	/**@type {OnParcelCallback} */
 	#onParcelCallback;
+	/**@type {OnMessageCallback} */
+	#onMessageCallback;
 	
 	/**@type {OptionsGeneration} */
 	#optionsGeneration;
@@ -40,31 +44,37 @@ export default class Agent {
 	 * @param {OnMapCallback} onMapCallback
 	 * @param {OnAgentCallback} onAgentCallback
 	 * @param {OnParcelCallback} onParcelCallback
+	 * @param {OnMessageCallback} onMessageCallback
 	 * @param {OptionsGeneration} optionsGeneration
 	 * @param {OptionsFiltering} optionsFiltering
 	 * @param {Deliberate} deliberate
 	 * @param {IntentionRevision} intentionRevision
 	 * @param {Planner} planner
 	 * @param {string} token
+	 * @param {string} communication_token
 	 */
 	constructor(onMapCallback,
 	            onAgentCallback,
 	            onParcelCallback,
+	            onMessageCallback,
 	            optionsGeneration,
 	            optionsFiltering,
 	            deliberate,
 	            intentionRevision,
 	            planner,
-	            token = undefined) {
+	            token = undefined,
+	            communication_token = "") {
 		if(token === undefined){
 			this.#apiClient = new DeliverooApi( config.host, config.token );
 		} else {
 			this.#apiClient = new DeliverooApi( config.host, token );
 		}
 		this.#beliefSet = new BeliefSet();
+		this.#beliefSet.communication_token = communication_token;
 		this.#onMapCallback = onMapCallback;
 		this.#onAgentCallback = onAgentCallback;
 		this.#onParcelCallback = onParcelCallback;
+		this.#onMessageCallback = onMessageCallback;
 		this.#optionsGeneration = optionsGeneration;
 		this.#optionsFiltering = optionsFiltering;
 		this.#deliberate = deliberate;
@@ -79,13 +89,13 @@ export default class Agent {
 	 * @param {Intention} new_intention
 	 */
 	async changePlan(new_intention){
-		console.log("revision completed");
+		if(AGENT_LOG) console.log("revision completed");
 		this.#beliefSet.revision_running = false;
-		console.log("changePlan : new intention -> " + new_intention.description());
+		if(AGENT_LOG) console.log("changePlan : new intention -> " + new_intention.description());
 		this.#beliefSet.currentIntention = new_intention;
 		await this.#executor.stop_plan();
 		this.#executor.set_new_plan(await this.#planner(this.#beliefSet));
-		console.log("changePlan : plan changed");
+		if(AGENT_LOG) console.log("changePlan : plan changed");
 	}
 	
 	async revision(){
@@ -107,21 +117,21 @@ export default class Agent {
 				
 				if (this.#beliefSet.currentIntention.status === "completed" ||
 					this.#beliefSet.currentIntention.status === "failed") {
-					console.log("Loop : calling revision " + this.#executor.status);
+					if(AGENT_LOG) console.log("Loop : calling revision " + this.#executor.status);
 					await this.revision();
 				}
 				
 				if(this.#beliefSet.currentIntention.status === "invalid"){
-					console.log("invalid status");
+					if(AGENT_LOG) console.log("invalid status");
 				}
 			}
 			await new Promise((r) => {setTimeout(r)});
 		}
-		console.log("Agent Loop aborted");
+		if(AGENT_LOG) console.log("Agent Loop aborted");
 	}
 	
 	abort_execution(){
-		console.log("Aborting");
+		if(AGENT_LOG) console.log("Aborting");
 		this.#abort = true;
 		this.#executor.abort_execution();
 		this.#apiClient.socket.disconnect();
@@ -132,7 +142,7 @@ export default class Agent {
 		this.#apiClient.onYou((you) => {
 			this.#beliefSet.me = you;
 			if(!this.#started) {
-				console.log("starting")
+				if(AGENT_LOG) console.log("starting")
 				this.#started = true;
 				this.changePlan(this.#beliefSet.currentIntention);
 			}
@@ -143,7 +153,13 @@ export default class Agent {
 		this.#apiClient.onParcelsSensing((parcels) => this.#onParcelCallback(parcels,this.#beliefSet,() => {this.revision();}));
 		this.#apiClient.onAgentsSensing((agents) => this.#onAgentCallback(agents,this.#beliefSet));
 		
-		this.#apiClient.onDisconnect(() => console.log("Disconnecting ..."));
+		this.#apiClient.onMsg((id,name, msg, cll) =>
+			this.#onMessageCallback(this.#beliefSet, id, name, msg, cll)
+		);
+		
+		this.#apiClient.onDisconnect(() => {
+			if (AGENT_LOG) console.log("Disconnecting ...")
+		});
 		
 		if(end_after > 0){
 			setTimeout(() => this.abort_execution(), end_after);

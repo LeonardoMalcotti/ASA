@@ -6,4 +6,13 @@ const config = {
     
 }
 
+export const AGENT_LOG = false;
+export const DELIBERATE_LOG = false;
+export const REVISION_LOG = false;
+export const FILTERING_LOG = false;
+export const GENERATION_LOG = false;
+export const EXECUTOR_LOG = false;
+export const PLANNING_LOG = false;
+
+
 export default config;

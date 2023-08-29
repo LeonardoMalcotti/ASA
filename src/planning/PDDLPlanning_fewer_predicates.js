@@ -18,6 +18,9 @@ import Position from "../classes/Position.js";
 import GoRight from "../actions/GoRight.js";
 import GoUp from "../actions/GoUp.js";
 import GoDown from "../actions/GoDown.js";
+import {PLANNING_LOG} from "../../config.js";
+import DiscoverAlly from "../intentions/DiscoverAlly.js";
+import Shout from "../actions/Shout.js";
 
 const tile1_var = new PDDLVariable("t1","tile");
 const tile2_var = new PDDLVariable("t2","tile");
@@ -101,7 +104,7 @@ export default async function plan_pddl_2(beliefs){
 	init.push(is_at.with([beliefs.my_position().hash()]));
 	
 	if(intention instanceof GoPutDown) {
-		console.log("plan_pddl : planning a put down");
+		if(PLANNING_LOG) console.log("plan_pddl : planning a put down");
 		let delivery = intention.position.hash();
 		let goal = [];
 		
@@ -117,8 +120,8 @@ export default async function plan_pddl_2(beliefs){
 			new PDDLCondition(goal)
 		);
 		
-		console.log(domain.toPddlString());
-		console.log(problem.toPddlString());
+		if(PLANNING_LOG) console.log(domain.toPddlString());
+		if(PLANNING_LOG) console.log(problem.toPddlString());
 		
 		let pddl_actions = await onlineSolver(
 			domain.toPddlString(),
@@ -129,7 +132,7 @@ export default async function plan_pddl_2(beliefs){
 	}
 	
 	if(intention instanceof GoPickUp) {
-		console.log("plan_pddl : planning a pick up");
+		if(PLANNING_LOG) console.log("plan_pddl : planning a pick up");
 		let position = intention.position.hash();
 		let goal = [];
 		
@@ -143,8 +146,8 @@ export default async function plan_pddl_2(beliefs){
 			new PDDLCondition(goal)
 		);
 		
-		console.log(domain.toPddlString());
-		console.log(problem.toPddlString());
+		if(PLANNING_LOG) console.log(domain.toPddlString());
+		if(PLANNING_LOG) console.log(problem.toPddlString());
 		
 		let pddl_actions = await onlineSolver(
 			domain.toPddlString(),
@@ -155,9 +158,19 @@ export default async function plan_pddl_2(beliefs){
 	}
 	
 	if(intention instanceof DefaultIntention || intention === undefined) {
-		console.log("plan_pddl : planning a default");
+		if(PLANNING_LOG) console.log("plan_pddl : planning a default");
 		let path = await calculate_random_path(beliefs);
 		path_to_actions(beliefs.my_position(),path).forEach((a) => {plan.actions.push(a)});
+	}
+	
+	if(intention instanceof DiscoverAlly){
+		if(PLANNING_LOG) console.log("plan_pddl : planning a discover ally");
+		plan.actions.push(new Shout({
+			topic : "Ally?",
+			cnt : undefined,
+			token : undefined,
+			msg_id : crypto.randomUUID()
+		}));
 	}
 	
 	return plan;

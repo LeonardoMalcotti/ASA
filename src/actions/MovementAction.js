@@ -17,12 +17,11 @@ export class MovementAction extends Action{
 	/**
 	 * @param {DeliverooApi} client
 	 * @param {BeliefSet} beliefs
-	 * @param {Plan} plan
 	 * @return {Promise<{x: number, y: number} | "false">}
 	 */
-	async execute(client, beliefs, plan){
+	async execute(client, beliefs){
 		let new_position = await client.move(this.direction);
-		await this.pick_parcel_on_the_way(beliefs,plan,new_position);
+		await this.pick_parcel_on_the_way(beliefs,new_position);
 		return new_position;
 	}
 	
@@ -35,7 +34,9 @@ export class MovementAction extends Action{
 	 * @param new_position
 	 * @return {Promise<void>}
 	 */
-	async pick_parcel_on_the_way(beliefs, plan, new_position){
+	async pick_parcel_on_the_way(beliefs, new_position){
+		let plan = beliefs.currentPlan;
+		
 		if(new_position !== "false" && !(plan.nextAction() instanceof PickUp)){
 			if(beliefs.parcelBeliefs.filter((p) =>
 				p.held_by === null &&

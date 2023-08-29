@@ -1,6 +1,7 @@
 import {roundedPosition} from "../classes/Position.js";
 import ParcelBelief from "../classes/ParcelBelief.js";
 import {remove_from_list} from "../utils/Utils.js";
+import Say from "../actions/Say.js";
 
 
 const PARCEL_PROBABILITY_DECAY = 0.05;
@@ -54,9 +55,23 @@ export async function onParcelCallback_simple(parcels, beliefs, reviseIntention)
         if(newData.carriedBy === null) revise = true
         beliefs.parcelBeliefs.push(ParcelBelief.fromParcelData(newData));
     }
+    
+    if(beliefs.allies.length !== 0){
+        beliefs.allies.forEach((id) => {
+            beliefs.currentPlan.actions.unshift(new Say(
+                id,
+                {
+                    topic : "ParcelSensing",
+                    cnt : beliefs.parcelBeliefs,
+                    token : beliefs.communication_token,
+                    msg_id : crypto.randomUUID()
+                }
+            ));
+        })
+    }
 
     if(revise === true){
-        console.log("onParcelCallback_simple : calling intention revision");
+        //console.log("onParcelCallback_simple : calling intention revision");
         reviseIntention();
     }
 }
@@ -105,6 +120,6 @@ export async function onParcelCallback_always_revise(parcels, beliefs, reviseInt
     // add to the beliefs all the remaining data received
     for(let newData of parcels) beliefs.parcelBeliefs.push(ParcelBelief.fromParcelData(newData));
     
-    console.log("onParcelCallback_simple : calling intention revision");
+    //console.log("onParcelCallback_simple : calling intention revision");
     reviseIntention();
 }

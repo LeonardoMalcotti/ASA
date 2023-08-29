@@ -1,6 +1,6 @@
 import Action from "./Action.js";
 
-export default class Say extends Action {
+export default class Ask extends Action {
 	/** @type {string} */
 	to;
 	/** @type {Message} */
@@ -23,6 +23,9 @@ export default class Say extends Action {
 	 * @return {Promise<(Object | false)>}
 	 */
 	async execute(client, beliefs) {
-		return await client.say(this.to,this.msg);
+		console.log(beliefs.me.name + " asking : " + this.msg);
+		let reply = await client.ask(this.to,this.msg);
+		console.log(beliefs.me.name + " reply received : " + reply);
+		return reply;
 	}
 }

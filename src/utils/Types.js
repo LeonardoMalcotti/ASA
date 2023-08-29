@@ -109,6 +109,15 @@
  */
 
 /**
+ * @callback OnMessageCallback
+ * @param {BeliefSet} beliefs
+ * @param {string} id
+ * @param {string} name
+ * @param {string} msg
+ * @param {function(string)} cll
+ */
+
+/**
  * @callback IntentionRevisionCallback
  * @return {void}
  */
@@ -117,6 +126,14 @@
  * @callback Planner
  * @param {BeliefSet} beliefs
  * @return {Promise<Plan>}
+ */
+
+/**
+ * @typedef {Object} Message
+ * @property {string} topic
+ * @property {any} cnt
+ * @property {string | undefined} token
+ * @property {string} msg_id
  */
 
 export class aNode {

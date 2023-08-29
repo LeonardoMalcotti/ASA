@@ -1,6 +1,7 @@
 import {TileMap} from "./TileMap.js";
 import Position from "./Position.js";
 import DefaultIntention from "../intentions/DefaultIntention.js";
+import Plan from "../actions/Plan.js";
 
 export default class BeliefSet {
 
@@ -18,7 +19,12 @@ export default class BeliefSet {
     currentIntention;
     /** @type {boolean} */
     revision_running;
-    
+    /** @type {string[]} */
+    allies;
+    /** @type {string} */
+    communication_token;
+    /** @type {Plan} */
+    currentPlan;
 
     constructor() {
         this.mapBeliefs = new TileMap();
@@ -27,6 +33,9 @@ export default class BeliefSet {
         this.me = {};
         this.currentIntention = new DefaultIntention();
         this.revision_running = false;
+        this.allies = [];
+        this.communication_token = undefined;
+        this.currentPlan = new Plan();
     }
 
     /**
@@ -35,6 +44,40 @@ export default class BeliefSet {
      */
     getParcelBelief(id) {
         return this.parcelBeliefs.find((p) => p.id === id);
+    }
+    
+    /**
+     * @param {ParcelBelief[]} parcels
+     */
+    updateParcelBeliefs(parcels){
+       for(let p of parcels){
+           let current_belief = this.getParcelBelief(p.id);
+           if(current_belief === undefined){
+               this.parcelBeliefs.push(p);
+           } else {
+               if(current_belief.probability < p.probability){
+                   this.deleteParcelBelief(current_belief);
+                   this.parcelBeliefs.push(p);
+               }
+           }
+       }
+    }
+    
+    /**
+     * @param {AgentBelief[]} agents
+     */
+    updateAgentBeliefs(agents){
+        for(let a of agents){
+            let current_belief = this.getAgentBelief(p.id);
+            if(current_belief === undefined){
+                this.agentBeliefs.push(a);
+            } else {
+                if(current_belief.probability < a.probability){
+                    this.deleteAgentBelief(current_belief);
+                    this.agentBeliefs.push(a);
+                }
+            }
+        }
     }
 
     /**

@@ -1,5 +1,6 @@
 import {roundedPosition} from "../classes/Position.js";
 import AgentBelief from "../classes/AgentBelief.js";
+import Say from "../actions/Say.js";
 
 const AGENT_PROBABILITY_DECAY = 0.1;
 const AGENT_PROBABILITY_THRESHOLD = 0.7;
@@ -39,5 +40,19 @@ export async function onAgentCallback_simple(agents,beliefs) {
 
 	for(let newData of agents) {
 		beliefs.agentBeliefs.push(AgentBelief.fromAgentData(newData));
+	}
+	
+	if(beliefs.allies.length !== 0){
+		beliefs.allies.forEach((id) => {
+			beliefs.currentPlan.actions.unshift(new Say(
+				id,
+				{
+					topic : "AgentSensing",
+					cnt : beliefs.agentBeliefs,
+					token : beliefs.communication_token,
+					msg_id : crypto.randomUUID()
+				}
+			));
+		})
 	}
 }
