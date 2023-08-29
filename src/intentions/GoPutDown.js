@@ -1,6 +1,7 @@
 import {Intention} from "./Intention.js";
 import {optimal_distance} from "../utils/Utils.js";
 import {calculate_path_considering_nearby_agents} from "../utils/astar.js";
+import {reward_after_n_steps} from "../classes/ParcelBelief.js";
 
 /**
  * @property {string[]} parcels_id
@@ -66,7 +67,7 @@ export default class GoPutDown extends Intention {
 		
 		let min_distance = optimal_distance(beliefs.my_position(), this.position);
 		
-		if(parcel.reward_after_n_steps(beliefs, min_distance) <= 0) return false;
+		if(reward_after_n_steps(beliefs, parcel, min_distance) <= 0) return false;
 		
 		if(this.possible_path === undefined){
 			this.possible_path = await calculate_path_considering_nearby_agents(beliefs,beliefs.my_position(),this.position);
@@ -74,7 +75,7 @@ export default class GoPutDown extends Intention {
 		
 		if(this.possible_path === []) return false;
 		
-		let rw = parcel.reward_after_n_steps(beliefs, this.possible_path.length);
+		let rw = reward_after_n_steps(beliefs, parcel, this.possible_path.length);
 		if(rw <= 0) return false;
 		
 		this.possible_reward += rw;

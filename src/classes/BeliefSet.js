@@ -2,6 +2,7 @@ import {TileMap} from "./TileMap.js";
 import Position from "./Position.js";
 import DefaultIntention from "../intentions/DefaultIntention.js";
 import Plan from "../actions/Plan.js";
+import DiscoverAlly from "../intentions/DiscoverAlly.js";
 
 export default class BeliefSet {
 
@@ -31,7 +32,7 @@ export default class BeliefSet {
         this.agentBeliefs = [];
         this.parcelBeliefs = [];
         this.me = {};
-        this.currentIntention = new DefaultIntention();
+        this.currentIntention = new DiscoverAlly();
         this.revision_running = false;
         this.allies = [];
         this.communication_token = undefined;
@@ -68,7 +69,7 @@ export default class BeliefSet {
      */
     updateAgentBeliefs(agents){
         for(let a of agents){
-            let current_belief = this.getAgentBelief(p.id);
+            let current_belief = this.getAgentBelief(a.id);
             if(current_belief === undefined){
                 this.agentBeliefs.push(a);
             } else {

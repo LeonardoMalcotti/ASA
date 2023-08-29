@@ -1,5 +1,5 @@
 import {roundedPosition} from "../classes/Position.js";
-import ParcelBelief from "../classes/ParcelBelief.js";
+import ParcelBelief, {reward_after_n_seconds} from "../classes/ParcelBelief.js";
 import {remove_from_list} from "../utils/Utils.js";
 import Say from "../actions/Say.js";
 
@@ -39,7 +39,7 @@ export async function onParcelCallback_simple(parcels, beliefs, reviseIntention)
             existing_belief.probability = existing_belief.probability - PARCEL_PROBABILITY_DECAY;
             let now = Date.now();
             let time_passed = (now - existing_belief.time) / 1000;
-            existing_belief.reward = existing_belief.reward_after_n_seconds(beliefs,time_passed);
+            existing_belief.reward = reward_after_n_seconds(beliefs,existing_belief,time_passed);
             existing_belief.time = now;
             
             if (existing_belief.reward <= 0 ||
@@ -107,7 +107,7 @@ export async function onParcelCallback_always_revise(parcels, beliefs, reviseInt
             existing_belief.probability = existing_belief.probability - PARCEL_PROBABILITY_DECAY;
             let now = Date.now();
             let time_passed = (now - existing_belief.time) / 1000;
-            existing_belief.reward = existing_belief.reward_after_n_seconds(beliefs,time_passed);
+            existing_belief.reward = reward_after_n_seconds(beliefs, existing_belief,time_passed);
             existing_belief.time = now;
             
             if (existing_belief.reward <= 0 ||

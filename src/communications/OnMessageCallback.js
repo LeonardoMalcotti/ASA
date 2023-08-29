@@ -1,4 +1,5 @@
 import Say from "../actions/Say.js";
+import {ON_MESSAGE_LOG} from "../../config.js";
 
 /**
  * @param {BeliefSet} beliefs
@@ -8,12 +9,9 @@ import Say from "../actions/Say.js";
  * @param {function(string)} cll
  */
 export default async function onMessageCallback(beliefs, id,name, msg, cll){
-	console.log(beliefs.me.name + " received message:");
-	console.log(id);
-	console.log(name);
-	console.log(msg);
 	
 	if(msg.topic === "Ally?"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : Ally?");
 		beliefs.currentPlan.actions.unshift(new Say(id, {
 			topic : "Ally!",
 			cnt : undefined,
@@ -21,21 +19,29 @@ export default async function onMessageCallback(beliefs, id,name, msg, cll){
 			msg_id : msg.msg_id
 		}));
 		beliefs.allies.push(id);
+		return;
 	}
 	
 	if(msg.token !== beliefs.communication_token){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message filtered, wrong token");
 		return;
 	}
 	
 	if(msg.topic === "Ally!"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : Ally!");
 		beliefs.allies.push(id);
+		return;
 	}
 	
 	if(msg.topic === "ParcelSensing"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : ParcelSensing");
 		beliefs.updateParcelBeliefs(msg.cnt);
+		return;
 	}
 	
 	if(msg.topic === "AgentSensing"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : AgentSensing");
 		beliefs.updateAgentBeliefs(msg.cnt);
+		return;
 	}
 }

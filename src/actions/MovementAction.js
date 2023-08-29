@@ -1,6 +1,7 @@
 import Action from "./Action.js";
 import {same_position} from "../utils/Utils.js";
 import PickUp from "./PickUp.js";
+import {reward_after_n_steps} from "../classes/ParcelBelief.js";
 
 export class MovementAction extends Action{
 	/** @type {string} */
@@ -41,7 +42,7 @@ export class MovementAction extends Action{
 			if(beliefs.parcelBeliefs.filter((p) =>
 				p.held_by === null &&
 				same_position(p.position,new_position) &&
-				p.reward_after_n_steps(beliefs,plan.actions.length) > 0).length !== 0)
+				reward_after_n_steps(beliefs,p,plan.actions.length) > 0).length !== 0)
 			{
 				plan.actions.unshift(new PickUp());
 			}
