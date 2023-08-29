@@ -113,6 +113,7 @@
 /**
  * @callback OnMessageCallback
  * @param {BeliefSet} beliefs
+ * @param {DeliverooApi} client
  * @param {string} id
  * @param {string} name
  * @param {string} msg
@@ -136,6 +137,12 @@
  * @property {any} cnt
  * @property {string | undefined} token
  * @property {string} msg_id
+ */
+
+/**
+ * @typedef {Object} Ally
+ * @property {string} id
+ * @property {Intention} intention
  */
 
 export class aNode {

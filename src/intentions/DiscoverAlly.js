@@ -4,6 +4,7 @@ export default class DiscoverAlly extends Intention {
 	
 	constructor() {
 		super();
+		this.possible_reward = Number.MAX_VALUE;
 	}
 	
 	async achievable(beliefs) {

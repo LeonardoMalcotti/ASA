@@ -9,6 +9,7 @@ import {deliberate_precise} from "./decision/Deliberate.js";
 import {intentionRevision_non_stubborn} from "./decision/IntentionRevision.js";
 import plan_pddl_2 from "./planning/PDDLPlanning_fewer_predicates.js";
 import {communication_token, tokens} from "../config.js";
+import {plan_simple} from "./planning/Planning.js";
 
 
 let agent_A = new Agent(
@@ -20,7 +21,7 @@ let agent_A = new Agent(
 	optionFiltering,
 	deliberate_precise,
 	intentionRevision_non_stubborn,
-	plan_pddl_2,
+	plan_simple,
 	tokens[0],
 	communication_token
 );

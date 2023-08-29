@@ -10,6 +10,7 @@ import {path_to_actions} from "./utils.js";
 import {PLANNING_LOG} from "../../config.js";
 import Shout from "../actions/Shout.js";
 import Ask from "../actions/Ask.js";
+import DiscoverAlly from "../intentions/DiscoverAlly.js";
 
 /**
  *
@@ -44,6 +45,16 @@ export async function plan_simple(beliefs) {
 		if(PLANNING_LOG) console.log("plan_simple : planning a default");
 		let path = await calculate_random_path(beliefs);
 		path_to_actions(beliefs.my_position(),path).forEach((a) => {plan.actions.push(a)});
+	}
+	
+	if(intention instanceof DiscoverAlly){
+		if(PLANNING_LOG) console.log("plan_pddl : planning a discover ally");
+		plan.actions.push(new Shout({
+			topic : "Ally?",
+			cnt : undefined,
+			token : undefined,
+			msg_id : crypto.randomUUID()
+		}));
 	}
 	
 	return plan;

@@ -57,6 +57,8 @@ export default class GoPickUp extends Intention{
 		
 		if(beliefs.agentBeliefs.some((a) => same_position(a.position,parcel.position))) return false;
 		
+		if(beliefs.allies.some((a) => (a.intention instanceof GoPickUp) && this.parcel_id === a.intention.parcel_id)) return false;
+		
 		this.possible_reward = parcel.reward_after_n_steps(beliefs, this.possible_path.length);
 		return this.possible_reward > 0;
 	}

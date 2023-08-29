@@ -22,7 +22,7 @@ export default class BeliefSet {
     currentIntention;
     /** @type {boolean} */
     revision_running;
-    /** @type {string[]} */
+    /** @type {Ally[]} */
     allies;
     /** @type {string} */
     communication_token;

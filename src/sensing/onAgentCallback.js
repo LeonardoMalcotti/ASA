@@ -8,6 +8,7 @@ const AGENT_PROBABILITY_THRESHOLD = 0.7;
 /**
  * @param {AgentData[]} agents
  * @param {BeliefSet} beliefs
+ * @param {DeliverooApi} client
  * @returns {Promise<void>}
  */
 export async function onAgentCallback_simple(agents,beliefs, client) {

@@ -2,6 +2,7 @@ import BeliefSet from "../classes/BeliefSet.js";
 import {DeliverooApi} from "@unitn-asa/deliveroo-js-client";
 import config, {AGENT_LOG} from "../../config.js";
 import ContinuousExecutor from "../executor/ContinuousExecutor.js";
+import Say from "../actions/Say.js";
 
 
 
@@ -96,6 +97,21 @@ export default class Agent {
 		await this.#executor.stop_plan();
 		this.#executor.set_new_plan(await this.#planner(this.#beliefSet));
 		if(AGENT_LOG) console.log("changePlan : plan changed");
+		
+		if(this.#beliefSet.allies.length > 0){
+			if(AGENT_LOG) console.log("changePlan : sending new intention to allies");
+			for(let al of this.#beliefSet.allies){
+				await (new Say(al.id, {
+					topic : "NewIntention",
+					cnt : {
+						type : this.#beliefSet.currentIntention.constructor.name,
+						val : this.#beliefSet.currentIntention
+					},
+					token : this.#beliefSet.communication_token,
+					msg_id : crypto.randomUUID()
+				}).execute(this.#apiClient,this.#beliefSet));
+			}
+		}
 	}
 	
 	async revision(){
@@ -117,6 +133,7 @@ export default class Agent {
 				
 				if (this.#beliefSet.currentIntention.status === "completed" ||
 					this.#beliefSet.currentIntention.status === "failed") {
+					
 					if(AGENT_LOG) console.log("Loop : calling revision " + this.#executor.status);
 					await this.revision();
 				}
@@ -154,7 +171,7 @@ export default class Agent {
 		this.#apiClient.onAgentsSensing((agents) => this.#onAgentCallback(agents,this.#beliefSet, this.#apiClient));
 		
 		this.#apiClient.onMsg((id,name, msg, cll) =>
-			this.#onMessageCallback(this.#beliefSet, id, name, msg, cll)
+			this.#onMessageCallback(this.#beliefSet, this.#apiClient, id, name, msg, cll, () => {this.revision();})
 		);
 		
 		this.#apiClient.onDisconnect(() => {
