@@ -90,6 +90,7 @@
  * @callback OnAgentCallback
  * @param {AgentData[]} agents
  * @param {BeliefSet} beliefs
+ * @param {DeliverooApi} client
  * @return {Promise<void>}
  */
 
@@ -97,6 +98,7 @@
  * @callback OnParcelCallback
  * @param {ParcelData[]} parcels
  * @param {BeliefSet} beliefs
+ * @param {DeliverooApi} client
  * @param {IntentionRevisionCallback} reviseIntention
  * @return {Promise<void>}
  */

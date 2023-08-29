@@ -3,6 +3,8 @@ import Position from "./Position.js";
 import DefaultIntention from "../intentions/DefaultIntention.js";
 import Plan from "../actions/Plan.js";
 import DiscoverAlly from "../intentions/DiscoverAlly.js";
+import ParcelBelief from "./ParcelBelief.js";
+import AgentBelief from "./AgentBelief.js";
 
 export default class BeliefSet {
 
@@ -48,34 +50,34 @@ export default class BeliefSet {
     }
     
     /**
-     * @param {ParcelBelief[]} parcels
+     * @param {ParcelData[]} parcels
      */
-    updateParcelBeliefs(parcels){
+    async updateParcelBeliefs(parcels){
        for(let p of parcels){
            let current_belief = this.getParcelBelief(p.id);
            if(current_belief === undefined){
-               this.parcelBeliefs.push(p);
+               this.parcelBeliefs.push(ParcelBelief.fromParcelData(p));
            } else {
-               if(current_belief.probability < p.probability){
+               if(current_belief.probability < 1){
                    this.deleteParcelBelief(current_belief);
-                   this.parcelBeliefs.push(p);
+                   this.parcelBeliefs.push(ParcelBelief.fromParcelData(p));
                }
            }
        }
     }
     
     /**
-     * @param {AgentBelief[]} agents
+     * @param {AgentData[]} agents
      */
-    updateAgentBeliefs(agents){
+    async updateAgentBeliefs(agents){
         for(let a of agents){
             let current_belief = this.getAgentBelief(a.id);
             if(current_belief === undefined){
-                this.agentBeliefs.push(a);
+                this.agentBeliefs.push(AgentBelief.fromAgentData(a));
             } else {
-                if(current_belief.probability < a.probability){
+                if(current_belief.probability < 1){
                     this.deleteAgentBelief(current_belief);
-                    this.agentBeliefs.push(a);
+                    this.agentBeliefs.push(AgentBelief.fromAgentData(a));
                 }
             }
         }

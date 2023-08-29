@@ -10,7 +10,7 @@ const AGENT_PROBABILITY_THRESHOLD = 0.7;
  * @param {BeliefSet} beliefs
  * @returns {Promise<void>}
  */
-export async function onAgentCallback_simple(agents,beliefs) {
+export async function onAgentCallback_simple(agents,beliefs, client) {
 	//console.log("called onAgentCallback_simple");
 	for(let existing_belief of beliefs.agentBeliefs){
 		let new_data = agents.find((a) => a.id === existing_belief.id);
@@ -42,17 +42,17 @@ export async function onAgentCallback_simple(agents,beliefs) {
 		beliefs.agentBeliefs.push(AgentBelief.fromAgentData(newData));
 	}
 	
-	if(beliefs.allies.length !== 0){
-		beliefs.allies.forEach((id) => {
-			beliefs.currentPlan.actions.unshift(new Say(
+	if(beliefs.allies.length !== 0 && agents.length > 0){
+		for (const id of beliefs.allies) {
+			await (new Say(
 				id,
 				{
 					topic : "AgentSensing",
-					cnt : beliefs.agentBeliefs,
+					cnt : agents,
 					token : beliefs.communication_token,
 					msg_id : crypto.randomUUID()
 				}
-			));
-		})
+			)).execute(client,beliefs);
+		}
 	}
 }

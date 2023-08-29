@@ -35,13 +35,13 @@ export default async function onMessageCallback(beliefs, id,name, msg, cll){
 	
 	if(msg.topic === "ParcelSensing"){
 		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : ParcelSensing");
-		beliefs.updateParcelBeliefs(msg.cnt);
+		await beliefs.updateParcelBeliefs(msg.cnt);
 		return;
 	}
 	
 	if(msg.topic === "AgentSensing"){
 		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : AgentSensing");
-		beliefs.updateAgentBeliefs(msg.cnt);
+		await beliefs.updateAgentBeliefs(msg.cnt);
 		return;
 	}
 }

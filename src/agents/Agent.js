@@ -150,8 +150,8 @@ export default class Agent {
 		
 		this.#apiClient.onConfig((config) => this.#beliefSet.config = config);
 		this.#apiClient.onMap((width,height,tiles) => this.#onMapCallback(width, height, tiles, this.#beliefSet));
-		this.#apiClient.onParcelsSensing((parcels) => this.#onParcelCallback(parcels,this.#beliefSet,() => {this.revision();}));
-		this.#apiClient.onAgentsSensing((agents) => this.#onAgentCallback(agents,this.#beliefSet));
+		this.#apiClient.onParcelsSensing((parcels) => this.#onParcelCallback(parcels,this.#beliefSet, this.#apiClient,() => {this.revision();}));
+		this.#apiClient.onAgentsSensing((agents) => this.#onAgentCallback(agents,this.#beliefSet, this.#apiClient));
 		
 		this.#apiClient.onMsg((id,name, msg, cll) =>
 			this.#onMessageCallback(this.#beliefSet, id, name, msg, cll)

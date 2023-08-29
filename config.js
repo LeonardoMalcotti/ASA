@@ -6,14 +6,14 @@ const config = {
     
 }
 
-export const AGENT_LOG = false;
-export const DELIBERATE_LOG = false;
-export const REVISION_LOG = false;
-export const FILTERING_LOG = false;
-export const GENERATION_LOG = false;
-export const EXECUTOR_LOG = false;
-export const PLANNING_LOG = false;
-export const ON_MESSAGE_LOG = true;
+export const AGENT_LOG = true;
+export const DELIBERATE_LOG = true;
+export const REVISION_LOG = true;
+export const FILTERING_LOG = true;
+export const GENERATION_LOG = true;
+export const EXECUTOR_LOG = true;
+export const PLANNING_LOG = true;
+export const ON_MESSAGE_LOG = false;
 
 
 export const tokens = [

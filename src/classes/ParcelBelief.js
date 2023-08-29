@@ -61,7 +61,34 @@ export default class ParcelBelief {
     static fromParcelData(data) {
         return new ParcelBelief(data.id, new Position(data.x,data.y),data.carriedBy,data.reward, Date.now(), 1);
     }
+    
+    reward_after_n_steps(beliefs, steps) {
+        let decay_interval = beliefs.config.PARCEL_DECADING_INTERVAL;
+        let movement_speed = beliefs.config.MOVEMENT_DURATION;
+        let movement_steps = beliefs.config.MOVEMENT_STEPS;
+        
+        let seconds = (steps / movement_steps) * (movement_speed/1000)
+        switch (decay_interval) {
+            case "1s": return this.reward - Math.round(seconds);
+            case "2s": return this.reward - Math.round(seconds/2);
+            case "5s": return this.reward - Math.round(seconds/5);
+            case "10s": return this.reward - Math.round(seconds/10);
+            case "infinite": return this.reward;
+        }
+    }
+    
+    reward_after_n_seconds(beliefs, seconds){
+        let decay_interval = beliefs.config.PARCEL_DECADING_INTERVAL;
+        switch (decay_interval) {
+            case "1s": return this.reward - Math.round(seconds);
+            case "2s": return this.reward - Math.round(seconds/2);
+            case "5s": return this.reward - Math.round(seconds/5);
+            case "10s": return this.reward - Math.round(seconds/10);
+            case "infinite": return this.reward;
+        }
+    }
 }
+
 
 /**
  * Give the reward of this parcel after the agent has traveled the given number of steps.
@@ -70,6 +97,7 @@ export default class ParcelBelief {
  * @param {number} steps
  * @return {number}
  */
+/*
 export function reward_after_n_steps(beliefs, parcel, steps) {
     let decay_interval = beliefs.config.PARCEL_DECADING_INTERVAL;
     let movement_speed = beliefs.config.MOVEMENT_DURATION;
@@ -83,7 +111,7 @@ export function reward_after_n_steps(beliefs, parcel, steps) {
         case "10s": return parcel.reward - Math.round(seconds/10);
         case "infinite": return parcel.reward;
     }
-}
+}*/
 
 /**
  * @param {BeliefSet} beliefs
@@ -91,6 +119,7 @@ export function reward_after_n_steps(beliefs, parcel, steps) {
  * @param {number} seconds
  * @return {number}
  */
+/*
 export function reward_after_n_seconds(beliefs,parcel, seconds){
     let decay_interval = beliefs.config.PARCEL_DECADING_INTERVAL;
     switch (decay_interval) {
@@ -100,4 +129,4 @@ export function reward_after_n_seconds(beliefs,parcel, seconds){
         case "10s": return parcel.reward - Math.round(seconds/10);
         case "infinite": return parcel.reward;
     }
-}
+}*/

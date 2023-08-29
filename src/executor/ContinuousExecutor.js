@@ -5,6 +5,7 @@ import {same_position} from "../utils/Utils.js";
 
 import {path_to_actions} from "../planning/utils.js";
 import {EXECUTOR_LOG} from "../../config.js";
+import Plan from "../actions/Plan.js";
 
 export default class ContinuousExecutor extends Executor{
 	
@@ -37,13 +38,13 @@ export default class ContinuousExecutor extends Executor{
 						if(res === false){
 							if(EXECUTOR_LOG) console.log("ActionLoop : no avoidance path");
 							this.status = "failed";
-							this.currentPlan = undefined;
+							this.currentPlan = new Plan();
 						}
 					}
 				} else {
-					if(EXECUTOR_LOG) console.log("ActionLoop : executed action");
-					if(this.currentPlan !== undefined &&
-						this.beliefs.currentPlan.actions.length === 0){
+					if(EXECUTOR_LOG) console.log("ActionLoop : executed " + next_action.constructor.name);
+					if(this.beliefs.currentPlan.actions.length === 0){
+						if(EXECUTOR_LOG) console.log("ActionLoop : plan completed ");
 						this.status = "completed";
 					}
 				}
@@ -73,6 +74,9 @@ async function avoid_obstacle(beliefs, failed_action){
 			plan[0].position_to_reach
 		);
 		
+		if(EXECUTOR_LOG) console.log("Avoidance: from -> " + beliefs.my_position().description());
+		if(EXECUTOR_LOG) console.log("Avoidance: to -> " +plan[0].position_to_reach.description());
+		
 		if(path.length === 0){
 			plan.actions = [];
 			return false;
@@ -89,8 +93,9 @@ async function avoid_obstacle(beliefs, failed_action){
 		while(new_actions.length !== 0){
 			plan.actions.unshift(new_actions.pop());
 		}
-		 return true;
+		return true;
 	} else {
+		if(EXECUTOR_LOG) console.log("Avoidance: next action is not of movement type, change plan entirely.");
 		return false;
 	}
 }

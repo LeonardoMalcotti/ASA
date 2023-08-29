@@ -3,7 +3,6 @@ import {calculate_path_considering_nearby_agents} from "../utils/astar.js";
 import GoPickUp from "../intentions/GoPickUp.js";
 import DefaultIntention from "../intentions/DefaultIntention.js";
 import {DELIBERATE_LOG} from "../../config.js";
-import {reward_after_n_steps} from "../classes/ParcelBelief.js";
 
 /**
  * A deliberate function should take as input the current beliefs and a list of intentions (desires)
@@ -43,7 +42,7 @@ export async function deliberate_precise(beliefs, desires) {
 				if(dist === -1) {
 					i.possible_reward = -1;
 				} else {
-					i.possible_reward = reward_after_n_steps(beliefs, parcel, i.possible_path.length + dist);
+					i.possible_reward = parcel.reward_after_n_steps(beliefs, i.possible_path.length + dist);
 				}
 			}
 			return i;
@@ -80,7 +79,7 @@ async function distance_to_the_nearest_delivery(beliefs, parcel_id, heuristic = 
 
 	for(let t of beliefs.mapBeliefs.delivery_tiles){
 		let min_dist = optimal_distance(parcel.position,t.toPosition());
-		let opt_reward = reward_after_n_steps(beliefs, parcel, min_dist);
+		let opt_reward = parcel.reward_after_n_steps(beliefs, min_dist);
 		if( opt_reward <= 0){
 			continue;
 		}
@@ -89,11 +88,11 @@ async function distance_to_the_nearest_delivery(beliefs, parcel_id, heuristic = 
 
 		if(!heuristic){
 			let possible_path = await calculate_path_considering_nearby_agents(beliefs,parcel.position,t.toPosition());
-			if(possible_path === []){
+			if(possible_path.length === 0){
 				continue;
 			}
 
-			possible_reward = reward_after_n_steps(beliefs, parcel, possible_path.length);
+			possible_reward = parcel.reward_after_n_steps(beliefs, possible_path.length);
 		} else {
 			possible_reward = opt_reward;
 		}
