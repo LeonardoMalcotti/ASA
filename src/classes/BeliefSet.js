@@ -28,6 +28,8 @@ export default class BeliefSet {
     communication_token;
     /** @type {Plan} */
     currentPlan;
+    /** @type {DeliverooApi} */
+    client;
 
     constructor() {
         this.mapBeliefs = new TileMap();

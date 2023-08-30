@@ -182,6 +182,8 @@ export default class Agent {
 			setTimeout(() => this.abort_execution(), end_after);
 		}
 		
+		this.#beliefSet.client = this.#apiClient;
+		
 		this.loop();
 		this.#executor.action_loop();
 	}

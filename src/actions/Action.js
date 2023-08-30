@@ -8,11 +8,10 @@ export default class Action {
 	}
 	
 	/**
-	 * @param {DeliverooApi} client
 	 * @param {BeliefSet} beliefs
 	 * @return {Promise<(Object | false)>}
 	 */
-	async execute(client, beliefs){
+	async execute(beliefs){
 		return false;
 	}
 }

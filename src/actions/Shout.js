@@ -14,11 +14,10 @@ export default class Shout extends Action {
 	}
 	
 	/**
-	 * @param {DeliverooApi} client
 	 * @param {BeliefSet} beliefs
 	 * @return {Promise<(Object | false)>}
 	 */
-	async execute(client, beliefs) {
-		return await client.shout(this.msg);
+	async execute(beliefs) {
+		return await beliefs.client.shout(this.msg);
 	}
 }

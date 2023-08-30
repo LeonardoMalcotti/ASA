@@ -62,6 +62,19 @@ export default class ParcelBelief {
         return new ParcelBelief(data.id, new Position(data.x,data.y),data.carriedBy,data.reward, Date.now(), 1);
     }
     
+    /**
+     * @return {ParcelData}
+     */
+    toParcelData(){
+        return {
+            id: this.id,
+            x: this.position.x,
+            y: this.position.y,
+            carriedBy : this.held_by,
+            reward : this.reward
+        };
+    }
+    
     reward_after_n_steps(beliefs, steps) {
         let decay_interval = beliefs.config.PARCEL_DECADING_INTERVAL;
         let movement_speed = beliefs.config.MOVEMENT_DURATION;

@@ -4,6 +4,7 @@ import GoPickUp from "../intentions/GoPickUp.js";
 import GoPutDown from "../intentions/GoPutDown.js";
 import DiscoverAlly from "../intentions/DiscoverAlly.js";
 import DefaultIntention from "../intentions/DefaultIntention.js";
+import ParcelBelief from "../classes/ParcelBelief.js";
 
 /**
  * @param {BeliefSet} beliefs
@@ -67,6 +68,14 @@ export default async function onMessageCallback(beliefs,client, id,name, msg, cl
 		})
 		revise();
 		return;
+	}
+	
+	if(msg.topic === "Available?"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : Available?");
+		
+		/** @type {ParcelBelief[]}*/
+		let parcels = msg.cnt.parcels.map(ParcelBelief.fromParcelData);
+		
 	}
 }
 

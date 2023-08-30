@@ -9,19 +9,18 @@ export default class PickUp extends Action {
 	}
 	
 	/**
-	 * @param {DeliverooApi} client
 	 * @param {BeliefSet} beliefs
-	 * @return {Promise<{x: number, y: number} | "false">}
+	 * @return {Promise<integer[]>}
 	 */
-	async execute(client, beliefs){
-		let res = await client.pickup();
+	async execute(beliefs){
+		let res = await beliefs.client.pickup();
 		for(let p of res){
-			let b = beliefs.getParcelBelief(p);
+			let b = beliefs.getParcelBelief(p.toString());
 			if(b !== undefined){
 				b.held_by = beliefs.me.id;
 			}
 		}
 		//console.log("execute: PickUp");
-		return client.pickup();
+		return res;
 	}
 }

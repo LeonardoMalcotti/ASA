@@ -2,6 +2,7 @@ import DesireSet from "../classes/DesireSet.js";
 import GoPickUp from "../intentions/GoPickUp.js";
 import GoPutDown from "../intentions/GoPutDown.js";
 import {GENERATION_LOG} from "../../config.js";
+import BringTo from "../intentions/BringTo.js";
 
 /**
  *
@@ -27,6 +28,9 @@ export function optionsGeneration_simple(beliefs)  {
 	let held_parcels_ids = held_parcels.map((p) => p.id);
 	if(held_parcels_ids.length !== 0) {
 		beliefs.mapBeliefs.delivery_tiles.forEach((d) => desires.add_intention(new GoPutDown(held_parcels_ids, d.toPosition())))
+		if(beliefs.allies.length !== 0){
+			beliefs.allies.forEach((a) => desires.add_intention(new BringTo(held_parcels_ids,a.id)));
+		}
 	}
 	
 	if(GENERATION_LOG) console.log("optionsGeneration_simple : generated desires -> " + desires.intentions.length);

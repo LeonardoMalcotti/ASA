@@ -18,13 +18,12 @@ export default class Ask extends Action {
 	}
 	
 	/**
-	 * @param {DeliverooApi} client
 	 * @param {BeliefSet} beliefs
 	 * @return {Promise<(Object | false)>}
 	 */
-	async execute(client, beliefs) {
+	async execute(beliefs) {
 		console.log(beliefs.me.name + " asking : " + this.msg);
-		let reply = await client.ask(this.to,this.msg);
+		let reply = await beliefs.client.ask(this.to,this.msg);
 		console.log(beliefs.me.name + " reply received : " + reply);
 		return reply;
 	}

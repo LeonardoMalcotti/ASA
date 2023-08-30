@@ -18,11 +18,10 @@ export default class Say extends Action {
 	}
 	
 	/**
-	 * @param {DeliverooApi} client
 	 * @param {BeliefSet} beliefs
 	 * @return {Promise<(Object | false)>}
 	 */
-	async execute(client, beliefs) {
-		return await client.say(this.to,this.msg);
+	async execute(beliefs) {
+		return await beliefs.client.say(this.to,this.msg);
 	}
 }

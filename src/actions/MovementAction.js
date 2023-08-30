@@ -15,12 +15,11 @@ export class MovementAction extends Action{
 	}
 	
 	/**
-	 * @param {DeliverooApi} client
 	 * @param {BeliefSet} beliefs
 	 * @return {Promise<{x: number, y: number} | "false">}
 	 */
-	async execute(client, beliefs){
-		let new_position = await client.move(this.direction);
+	async execute(beliefs){
+		let new_position = await beliefs.client.move(this.direction);
 		await this.pick_parcel_on_the_way(beliefs,new_position);
 		return new_position;
 	}
@@ -30,7 +29,6 @@ export class MovementAction extends Action{
 	 * if the parcel is available, and it would not expire at the end of the current plan
 	 * it picks it up
 	 * @param beliefs
-	 * @param plan
 	 * @param new_position
 	 * @return {Promise<void>}
 	 */
