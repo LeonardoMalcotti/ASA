@@ -87,6 +87,7 @@ export default class BeliefSet {
 
     /**
      * @param {string} id the id of the agent to get.
+     * @return {(AgentBelief | undefined)}
      */
     getAgentBelief(id) {
         return this.agentBeliefs.find((a) => a.id === id);

@@ -3,6 +3,7 @@ import {calculate_path_considering_nearby_agents} from "../utils/astar.js";
 import GoPickUp from "../intentions/GoPickUp.js";
 import DefaultIntention from "../intentions/DefaultIntention.js";
 import {DELIBERATE_LOG} from "../../config.js";
+import BringTo from "../intentions/BringTo.js";
 
 /**
  * A deliberate function should take as input the current beliefs and a list of intentions (desires)
@@ -60,9 +61,17 @@ export async function deliberate_precise(beliefs, desires) {
 	// get only the intentions with the highest reward
 	res = res.filter((i) => i.possible_reward === best_reward)
 	
-	// sort them by increasing path length and return the first one, which have the shortest path
-	return  res.sort((i1,i2) => i1.possible_path.length - i2.possible_path.length)
-		       .shift();
+	// divide the bring to from the rest
+	let bring_to_options = res.filter((i) => i instanceof BringTo);
+	let other_options = res.filter((i) => !(i instanceof BringTo));
+	
+	// sort the rest by length of possible path
+	other_options = other_options.sort((i1,i2) => i1.possible_path.length - i2.possible_path.length)
+	
+	// re-add the bring to otions to the total
+	bring_to_options.forEach((o) => other_options.push(o));
+	
+	return  other_options.shift();
 }
 
 
@@ -74,7 +83,7 @@ export async function deliberate_precise(beliefs, desires) {
  */
 async function distance_to_the_nearest_delivery(beliefs, parcel_id, heuristic = false){
 	let parcel = beliefs.getParcelBelief(parcel_id);
-
+	if(parcel === undefined) return -1;
 	let min = Number.MAX_VALUE;
 
 	for(let t of beliefs.mapBeliefs.delivery_tiles){

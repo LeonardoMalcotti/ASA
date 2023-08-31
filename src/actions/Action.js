@@ -1,4 +1,3 @@
-import Ask from "./Ask.js";
 
 export default class Action {
 	
@@ -15,18 +14,5 @@ export default class Action {
 	 */
 	async execute(beliefs){
 		return false;
-	}
-	
-	/**
-	 * @param {BeliefSet} beliefs
-	 * @param {string} ally
-	 * @return {Ask}
-	 */
-	asCollaborationAction(beliefs,ally){
-		return new Ask(ally,{
-				topic: this.constructor.name,
-				token: beliefs.communication_token
-			}
-		);
 	}
 }

@@ -11,11 +11,10 @@ const PARCEL_PROBABILITY_THRESHOLD = 0.5;
 /**
  * @param {ParcelData[]} parcels
  * @param {BeliefSet} beliefs
- * @param {DeliverooApi} client
  * @param {IntentionRevisionCallback} reviseIntention
  * @returns {Promise<void>}
  */
-export async function onParcelCallback_simple(parcels, beliefs,client , reviseIntention){
+export async function onParcelCallback_simple(parcels, beliefs , reviseIntention){
     //console.log("called onParcelCallback_simple");
     for(let existing_belief of beliefs.parcelBeliefs){
         let new_data = parcels.find((p) => p.id === existing_belief.id)
@@ -58,15 +57,15 @@ export async function onParcelCallback_simple(parcels, beliefs,client , reviseIn
     }
     
     if(beliefs.allies.length !== 0 && parcels.length > 0){
-        for (const id of beliefs.allies) {
+        for (const a of beliefs.allies) {
             await (new Say(
-                id,
+                a.id,
                 {
                     topic : "ParcelSensing",
                     cnt : parcels,
                     token : beliefs.communication_token
                 }
-            )).execute(client,beliefs);
+            )).execute(beliefs);
         }
     }
 

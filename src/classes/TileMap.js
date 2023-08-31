@@ -28,6 +28,7 @@ export class TileMap {
 
     /**
      * @param {Tile} tile
+     * @return {Tile[]}
      */
     neighbors(tile){
         return this.tiles.filter((t) => (

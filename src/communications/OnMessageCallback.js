@@ -14,6 +14,8 @@ import GoRight from "../actions/GoRight.js";
 import PickUp from "../actions/PickUp.js";
 import PutDown from "../actions/PutDown.js";
 import BringTo from "../intentions/BringTo.js";
+import Plan from "../actions/Plan.js";
+import {plan_go_pick_up} from "../planning/Planning.js";
 
 /**
  * @param {BeliefSet} beliefs
@@ -78,6 +80,16 @@ export default async function onMessageCallback(beliefs, id,name, msg, cll, revi
 		return;
 	}
 	
+	if(msg.topic === "CurrentPosition"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : CurrentPosition");
+		if(cll === undefined){
+			if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " callback is unavailable");
+			return;
+		}
+		cll(beliefs.my_position());
+		return;
+	}
+	
 	if(msg.topic === "Available?"){
 		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : Available?");
 		
@@ -87,6 +99,7 @@ export default async function onMessageCallback(beliefs, id,name, msg, cll, revi
 		}
 		
 		if(msg.cnt.type === "BringTo"){
+			if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " check bring to availability");
 			let final_reward = await BringTo.check_availability(
 				beliefs,
 				msg.cnt.position,
@@ -136,6 +149,13 @@ export default async function onMessageCallback(beliefs, id,name, msg, cll, revi
 		cll("Yes");
 	}
 	
+	// available only if the agent is collaborating
+	if(!(beliefs.currentIntention instanceof Collaboration)){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " agent is not collaborating");
+		if(cll) cll("No");
+		return;
+	}
+	
 	if(msg.topic === "EndCollaboration"){
 		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : EndCollaboration");
 		if(cll === undefined){
@@ -146,13 +166,6 @@ export default async function onMessageCallback(beliefs, id,name, msg, cll, revi
 		beliefs.currentPlan.actions = [];
 		cll("Yes");
 		revise();
-	}
-	
-	// available only if the agent is collaborating
-	if(!(beliefs.currentIntention instanceof Collaboration)){
-		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " agent is not collaborating");
-		if(cll) cll("No");
-		return;
 	}
 	
 	if(msg.topic === "GoUp"){
@@ -227,6 +240,23 @@ export default async function onMessageCallback(beliefs, id,name, msg, cll, revi
 			cll("Yes");
 		}
 		return;
+	}
+	
+	if(msg.topic === "GoPickUp"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : GoPickUp");
+		let plan = new Plan();
+		let intention = new GoPickUp(msg.cnt.parcel_id,msg.cnt.position);
+		await plan_go_pick_up(beliefs,intention,plan);
+		while (plan.actions.length > 0){
+			let action = plan.actions.shift();
+			let res = await action.execute(beliefs);
+			if(res === undefined || res === false){
+				cll("No");
+				return;
+			}
+			await new Promise( (r) => {setTimeout(r)} );
+		}
+		cll("Yes");
 	}
 	
 }

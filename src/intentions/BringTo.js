@@ -3,6 +3,8 @@ import {calculate_path, calculate_path_considering_nearby_agents} from "../utils
 import Ask from "../actions/Ask.js";
 import {Collaboration} from "./Collaboration.js";
 import ParcelBelief from "../classes/ParcelBelief.js";
+import {askPosition} from "../communications/CollaborationUtils.js";
+import Position from "../classes/Position.js";
 
 export default class BringTo extends Collaboration{
 	/** @type {string[]} */
@@ -28,7 +30,14 @@ export default class BringTo extends Collaboration{
 	 */
 	async achievable(beliefs) {
 		if(this.status === "completed" || this.status === "failed" || this.status === "stopped") return false;
-		this.position = beliefs.getAgentBelief(this.ally).position;
+		let agent = beliefs.getAgentBelief(this.ally);
+		if(agent === undefined){
+			let res = await askPosition(beliefs,this.ally);
+			if(res === undefined || res === false) return false;
+			this.position = new Position(res.x,res.y);
+		} else {
+			this.position = agent.position;
+		}
 		let res = await Promise.all(this.parcels_id.map((id) => this.achievable_filter(beliefs,id)));
 		this.parcels_id = this.parcels_id.filter((v,i) => res[i]);
 		if(this.parcels_id.length === 0) return false;
@@ -77,8 +86,14 @@ export default class BringTo extends Collaboration{
 			return {delivery: d, distance: distance.length};
 		}))
 		
-		let nearest_delivery = deliveries.sort((d1,d2) => d1.distance - d2.distance).shift();
+		let nearest_delivery = deliveries
+			.filter((o) => o.distance > 0)
+			.sort((d1,d2) => d1.distance - d2.distance).shift();
 
+		if(nearest_delivery === undefined){
+			return -1;
+		}
+		
 		return parcels
 			.map((b) => ParcelBelief.fromParcelData(b))
 			.map((b) => {

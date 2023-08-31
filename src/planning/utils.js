@@ -2,6 +2,7 @@ import GoUp from "../actions/GoUp.js";
 import GoDown from "../actions/GoDown.js";
 import GoRight from "../actions/GoRight.js";
 import GoLeft from "../actions/GoLeft.js";
+import Position from "../classes/Position.js";
 
 /**
  * @param {Position} start
@@ -11,9 +12,9 @@ import GoLeft from "../actions/GoLeft.js";
 export function path_to_actions(start, path) {
 	let actions = [];
 	let previous_position = start;
-	
+	console.log(path);
 	for (let t of path) {
-		let next_position = t.toPosition();
+		let next_position = new Position(t.x, t.y);
 		if (previous_position.y < next_position.y) {
 			actions.push(new GoUp(next_position));
 		}

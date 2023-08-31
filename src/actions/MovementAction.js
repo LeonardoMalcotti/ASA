@@ -46,20 +46,4 @@ export class MovementAction extends Action{
 			}
 		}
 	}
-	
-	/**
-	 * @param {BeliefSet} beliefs
-	 * @param {string} ally
-	 * @return {Ask}
-	 */
-	asCollaborationAction(beliefs,ally){
-		return new Ask(ally,{
-				topic: this.constructor.name,
-				token: beliefs.communication_token,
-				cnt: {
-					position: this.position_to_reach
-				}
-			}
-		);
-	}
 }
