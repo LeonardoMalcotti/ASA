@@ -30,7 +30,7 @@ export default class BeliefSet {
     currentPlan;
     /** @type {DeliverooApi} */
     client;
-
+    
     constructor() {
         this.mapBeliefs = new TileMap();
         this.agentBeliefs = [];

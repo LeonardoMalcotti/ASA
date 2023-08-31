@@ -1,4 +1,5 @@
 import Action from "./Action.js";
+import Ask from "./Ask.js";
 
 export default class PickUp extends Action {
 	/**

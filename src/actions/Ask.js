@@ -1,4 +1,5 @@
 import Action from "./Action.js";
+import {ACTION_LOG} from "../../config.js";
 
 export default class Ask extends Action {
 	/** @type {string} */
@@ -22,9 +23,9 @@ export default class Ask extends Action {
 	 * @return {Promise<(Object | false)>}
 	 */
 	async execute(beliefs) {
-		console.log(beliefs.me.name + " asking : " + this.msg);
+		if(ACTION_LOG) console.log(beliefs.me.name + " asking : " + this.msg);
 		let reply = await beliefs.client.ask(this.to,this.msg);
-		console.log(beliefs.me.name + " reply received : " + reply);
+		if(ACTION_LOG) console.log(beliefs.me.name + " reply received : " + reply);
 		return reply;
 	}
 }

@@ -107,9 +107,8 @@ export default class Agent {
 						type : this.#beliefSet.currentIntention.constructor.name,
 						val : this.#beliefSet.currentIntention
 					},
-					token : this.#beliefSet.communication_token,
-					msg_id : crypto.randomUUID()
-				}).execute(this.#apiClient,this.#beliefSet));
+					token : this.#beliefSet.communication_token
+				}).execute(this.#beliefSet));
 			}
 		}
 	}
@@ -167,11 +166,11 @@ export default class Agent {
 		
 		this.#apiClient.onConfig((config) => this.#beliefSet.config = config);
 		this.#apiClient.onMap((width,height,tiles) => this.#onMapCallback(width, height, tiles, this.#beliefSet));
-		this.#apiClient.onParcelsSensing((parcels) => this.#onParcelCallback(parcels,this.#beliefSet, this.#apiClient,() => {this.revision();}));
-		this.#apiClient.onAgentsSensing((agents) => this.#onAgentCallback(agents,this.#beliefSet, this.#apiClient));
+		this.#apiClient.onParcelsSensing((parcels) => this.#onParcelCallback(parcels,this.#beliefSet,() => {this.revision();}));
+		this.#apiClient.onAgentsSensing((agents) => this.#onAgentCallback(agents,this.#beliefSet));
 		
 		this.#apiClient.onMsg((id,name, msg, cll) =>
-			this.#onMessageCallback(this.#beliefSet, this.#apiClient, id, name, msg, cll, () => {this.revision();})
+			this.#onMessageCallback(this.#beliefSet, id, name, msg, cll, () => {this.revision();})
 		);
 		
 		this.#apiClient.onDisconnect(() => {
@@ -182,6 +181,7 @@ export default class Agent {
 			setTimeout(() => this.abort_execution(), end_after);
 		}
 		
+		// for commodity
 		this.#beliefSet.client = this.#apiClient;
 		
 		this.loop();

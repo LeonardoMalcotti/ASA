@@ -6,6 +6,8 @@ import {same_position} from "../utils/Utils.js";
 import {path_to_actions} from "../planning/utils.js";
 import {EXECUTOR_LOG} from "../../config.js";
 import Plan from "../actions/Plan.js";
+import Ask from "../actions/Ask.js";
+import {endCollaboration} from "../communications/CollaborationUtils.js";
 
 export default class ContinuousExecutor extends Executor{
 	
@@ -24,9 +26,9 @@ export default class ContinuousExecutor extends Executor{
 				this.status = "executing";
 				let next_action = this.beliefs.currentPlan.actions.shift();
 				
-				let result = await next_action.execute(this.client, this.beliefs);
+				let result = await next_action.execute( this.beliefs);
 				
-				if(result === false){
+				if(result === false || result === "No"){
 					if(EXECUTOR_LOG) console.log("ActionLoop : failed action");
 					if (next_action instanceof MovementAction){
 						if(EXECUTOR_LOG) console.log("ActionLoop : calculate avoidance path");
@@ -38,6 +40,17 @@ export default class ContinuousExecutor extends Executor{
 						if(res === false){
 							if(EXECUTOR_LOG) console.log("ActionLoop : no avoidance path");
 							this.status = "failed";
+							this.currentPlan = new Plan();
+						}
+					}
+					
+					if(next_action instanceof Ask){
+						// try again
+						let result = await next_action.execute( this.beliefs);
+						if(result === false || result === "No"){
+							if(EXECUTOR_LOG) console.log("ActionLoop : failed action again");
+							this.status = "failed";
+							await endCollaboration(this.beliefs);
 							this.currentPlan = new Plan();
 						}
 					}

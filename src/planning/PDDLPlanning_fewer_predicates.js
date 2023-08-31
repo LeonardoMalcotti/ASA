@@ -168,8 +168,7 @@ export default async function plan_pddl_2(beliefs){
 		plan.actions.push(new Shout({
 			topic : "Ally?",
 			cnt : undefined,
-			token : undefined,
-			msg_id : crypto.randomUUID()
+			token : undefined
 		}));
 	}
 	

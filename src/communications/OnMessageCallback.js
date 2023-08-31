@@ -5,17 +5,25 @@ import GoPutDown from "../intentions/GoPutDown.js";
 import DiscoverAlly from "../intentions/DiscoverAlly.js";
 import DefaultIntention from "../intentions/DefaultIntention.js";
 import ParcelBelief from "../classes/ParcelBelief.js";
+import {calculate_path_considering_nearby_agents} from "../utils/astar.js";
+import {Collaboration} from "../intentions/Collaboration.js";
+import GoUp from "../actions/GoUp.js";
+import GoDown from "../actions/GoDown.js";
+import GoLeft from "../actions/GoLeft.js";
+import GoRight from "../actions/GoRight.js";
+import PickUp from "../actions/PickUp.js";
+import PutDown from "../actions/PutDown.js";
+import BringTo from "../intentions/BringTo.js";
 
 /**
  * @param {BeliefSet} beliefs
- * @param {DeliverooApi} client
  * @param {string} id
  * @param {string} name
  * @param {Message} msg
- * @param {function(string)} cll
+ * @param {function(any)} cll
  * @param {IntentionRevisionCallback} revise
  */
-export default async function onMessageCallback(beliefs,client, id,name, msg, cll, revise){
+export default async function onMessageCallback(beliefs, id,name, msg, cll, revise){
 	
 	if(msg.topic === "Ally?"){
 		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : Ally?");
@@ -23,14 +31,14 @@ export default async function onMessageCallback(beliefs,client, id,name, msg, cl
 		await new Say(id, {
 			topic : "Ally!",
 			cnt : undefined,
-			token : beliefs.communication_token,
-			msg_id : msg.msg_id
-		}).execute(client,beliefs);
+			token : beliefs.communication_token
+		}).execute(beliefs);
 		
 		beliefs.allies.push({id:id, intention: undefined});
 		return;
 	}
 	
+	// communication with allies only
 	if(msg.token !== beliefs.communication_token){
 		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message filtered, wrong token");
 		return;
@@ -73,10 +81,154 @@ export default async function onMessageCallback(beliefs,client, id,name, msg, cl
 	if(msg.topic === "Available?"){
 		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : Available?");
 		
-		/** @type {ParcelBelief[]}*/
-		let parcels = msg.cnt.parcels.map(ParcelBelief.fromParcelData);
+		if(cll === undefined){
+			if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " callback is unavailable");
+			return;
+		}
 		
+		if(msg.cnt.type === "BringTo"){
+			let final_reward = await BringTo.check_availability(
+				beliefs,
+				msg.cnt.position,
+				msg.cnt.parcels,
+				msg.cnt.possible_rewards);
+			
+			if(final_reward > 0){
+				cll({
+					res: "Yes",
+					final_reward: final_reward
+				});
+			} else {
+				cll({res: "No"});
+			}
+		}
+		
+		return;
 	}
+	
+	if(msg.topic === "Collaborating?"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : Collaborating?");
+		
+		if(cll === undefined){
+			if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " callback is unavailable");
+			return;
+		}
+		
+		if((beliefs.currentIntention instanceof Collaboration) &&
+			beliefs.currentIntention.ally === id){
+			cll("Yes");
+		} else {
+			cll("No");
+		}
+		
+		return;
+	}
+	
+	if(msg.topic === "StartCollaboration"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : StartCollaboration");
+		if(cll === undefined){
+			if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " callback is unavailable");
+			return;
+		}
+		
+		beliefs.currentIntention = new Collaboration(id);
+		beliefs.currentPlan.actions = [];
+		cll("Yes");
+	}
+	
+	if(msg.topic === "EndCollaboration"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : EndCollaboration");
+		if(cll === undefined){
+			if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " callback is unavailable");
+			return;
+		}
+		beliefs.currentIntention = new DefaultIntention();
+		beliefs.currentPlan.actions = [];
+		cll("Yes");
+		revise();
+	}
+	
+	// available only if the agent is collaborating
+	if(!(beliefs.currentIntention instanceof Collaboration)){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " agent is not collaborating");
+		if(cll) cll("No");
+		return;
+	}
+	
+	if(msg.topic === "GoUp"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : GoUp");
+		/** @type {Position} */
+		let position = msg.cnt.position;
+		let res = await(new GoUp(position)).execute(beliefs);
+		if(res === undefined || res === "false"){
+			cll("No");
+		} else{
+			cll("Yes");
+		}
+		return;
+	}
+	
+	if(msg.topic === "GoDown"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : GoDown");
+		/** @type {Position} */
+		let position = msg.cnt.position;
+		let res = await(new GoDown(position)).execute(beliefs);
+		if(res === undefined || res === "false"){
+			cll("No");
+		} else{
+			cll("Yes");
+		}
+		return;
+	}
+	
+	if(msg.topic === "GoLeft"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : GoLeft");
+		/** @type {Position} */
+		let position = msg.cnt.position;
+		let res = await(new GoLeft(position)).execute(beliefs);
+		if(res === undefined || res === "false"){
+			cll("No");
+		} else{
+			cll("Yes");
+		}
+		return;
+	}
+	
+	if(msg.topic === "GoRight"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : GoRight");
+		/** @type {Position} */
+		let position = msg.cnt.position;
+		let res = await(new GoRight(position)).execute(beliefs);
+		if(res === undefined || res === "false"){
+			cll("No");
+		} else{
+			cll("Yes");
+		}
+		return;
+	}
+	
+	if(msg.topic === "PickUp"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : PickUp");
+		let res = await(new PickUp()).execute(beliefs);
+		if(res === undefined || res.length === 0){
+			cll("No");
+		} else{
+			cll("Yes");
+		}
+		return;
+	}
+	
+	if(msg.topic === "PutDown"){
+		if(ON_MESSAGE_LOG) console.log(beliefs.me.id + " message received : PutDown");
+		let res = await(new PutDown()).execute(beliefs);
+		if(res === undefined || res.length === 0){
+			cll("No");
+		} else{
+			cll("Yes");
+		}
+		return;
+	}
+	
 }
 
 /**

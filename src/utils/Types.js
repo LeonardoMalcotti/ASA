@@ -90,7 +90,6 @@
  * @callback OnAgentCallback
  * @param {AgentData[]} agents
  * @param {BeliefSet} beliefs
- * @param {DeliverooApi} client
  * @return {Promise<void>}
  */
 
@@ -98,7 +97,6 @@
  * @callback OnParcelCallback
  * @param {ParcelData[]} parcels
  * @param {BeliefSet} beliefs
- * @param {DeliverooApi} client
  * @param {IntentionRevisionCallback} reviseIntention
  * @return {Promise<void>}
  */
@@ -113,11 +111,11 @@
 /**
  * @callback OnMessageCallback
  * @param {BeliefSet} beliefs
- * @param {DeliverooApi} client
  * @param {string} id
  * @param {string} name
  * @param {string} msg
  * @param {function(string)} cll
+ * @param {IntentionRevisionCallback} revise
  */
 
 /**
@@ -136,7 +134,6 @@
  * @property {string} topic
  * @property {any} cnt
  * @property {string | undefined} token
- * @property {string} msg_id
  */
 
 /**

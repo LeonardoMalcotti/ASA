@@ -1,6 +1,7 @@
 import Action from "./Action.js";
 import {same_position} from "../utils/Utils.js";
 import PickUp from "./PickUp.js";
+import Ask from "./Ask.js";
 
 export class MovementAction extends Action{
 	/** @type {string} */
@@ -44,5 +45,21 @@ export class MovementAction extends Action{
 				plan.actions.unshift(new PickUp());
 			}
 		}
+	}
+	
+	/**
+	 * @param {BeliefSet} beliefs
+	 * @param {string} ally
+	 * @return {Ask}
+	 */
+	asCollaborationAction(beliefs,ally){
+		return new Ask(ally,{
+				topic: this.constructor.name,
+				token: beliefs.communication_token,
+				cnt: {
+					position: this.position_to_reach
+				}
+			}
+		);
 	}
 }

@@ -64,8 +64,7 @@ export async function onParcelCallback_simple(parcels, beliefs,client , reviseIn
                 {
                     topic : "ParcelSensing",
                     cnt : parcels,
-                    token : beliefs.communication_token,
-                    msg_id : crypto.randomUUID()
+                    token : beliefs.communication_token
                 }
             )).execute(client,beliefs);
         }

@@ -1,13 +1,12 @@
-import {Intention} from "./Intention.js";
 import {optimal_distance} from "../utils/Utils.js";
-import {calculate_path_considering_nearby_agents} from "../utils/astar.js";
+import {calculate_path, calculate_path_considering_nearby_agents} from "../utils/astar.js";
 import Ask from "../actions/Ask.js";
+import {Collaboration} from "./Collaboration.js";
+import ParcelBelief from "../classes/ParcelBelief.js";
 
-export default class BringTo extends Intention{
+export default class BringTo extends Collaboration{
 	/** @type {string[]} */
 	parcels_id;
-	/** @type {string} */
-	ally_id;
 	/** @type {Position} */
 	position;
 	/** @type {{parcel_id:string, possible_reward:number}[]} */
@@ -18,9 +17,8 @@ export default class BringTo extends Intention{
 	 * @param {string} ally_id
 	 */
 	constructor(parcels_id, ally_id) {
-		super();
+		super(ally_id);
 		this.parcels_id = parcels_id;
-		this.ally_id = ally_id;
 		this.possible_reward_per_parcel = [];
 	}
 	
@@ -30,7 +28,7 @@ export default class BringTo extends Intention{
 	 */
 	async achievable(beliefs) {
 		if(this.status === "completed" || this.status === "failed" || this.status === "stopped") return false;
-		this.position = beliefs.getAgentBelief(this.ally_id).position;
+		this.position = beliefs.getAgentBelief(this.ally).position;
 		let res = await Promise.all(this.parcels_id.map((id) => this.achievable_filter(beliefs,id)));
 		this.parcels_id = this.parcels_id.filter((v,i) => res[i]);
 		if(this.parcels_id.length === 0) return false;
@@ -42,11 +40,10 @@ export default class BringTo extends Intention{
 	 * @return {Promise<boolean>}
 	 */
 	async ask_availability(beliefs){
-		let response = await (new Ask(this.ally_id,
+		let response = await (new Ask(this.ally,
 			{
 				topic: "Available?",
 				token: beliefs.communication_token,
-				msg_id: crypto.randomUUID(),
 				cnt: {
 					type: "BringTo",
 					position: this.position,
@@ -59,11 +56,38 @@ export default class BringTo extends Intention{
 			})).execute(beliefs);
 		
 		if(response === false) return false;
-		if(response.final_possible_reward === undefined) return false;
+		if(response.res === "No") return false;
 		
-		this.possible_reward = response.final_possible_reward;
+		this.possible_reward = response.final_reward;
 		
 		return true;
+	}
+	
+	/**
+	 * @param {BeliefSet} beliefs
+	 * @param {Position} position
+	 * @param {ParcelData[]} parcels
+	 * @param {{parcel_id: string, possible_reward: number}[]} possible_rewards
+	 * @return {Promise<number>}
+	 */
+	static async check_availability(beliefs, position, parcels, possible_rewards){
+		/** @type {{delivery: any, distance: number}[]} */
+		let deliveries = await Promise.all(beliefs.mapBeliefs.delivery_tiles.map( async (d) => {
+			let distance = await calculate_path_considering_nearby_agents(beliefs, beliefs.my_position(), d.toPosition());
+			return {delivery: d, distance: distance.length};
+		}))
+		
+		let nearest_delivery = deliveries.sort((d1,d2) => d1.distance - d2.distance).shift();
+
+		return parcels
+			.map((b) => ParcelBelief.fromParcelData(b))
+			.map((b) => {
+				b.reward = possible_rewards.find((r) => r.parcel_id === b.id).possible_reward;
+				b.reward = b.reward_after_n_steps(beliefs, nearest_delivery.distance);
+				return b;
+			})
+			.filter((b) => b.reward > 0)
+			.reduce((acc, crr) => acc + crr.reward, 0);
 	}
 	
 	/**
@@ -80,7 +104,7 @@ export default class BringTo extends Intention{
 		if(parcel.reward_after_n_steps(beliefs, min_distance) <= 0) return false;
 		
 		if(this.possible_path === undefined){
-			this.possible_path = await calculate_path_considering_nearby_agents(beliefs,beliefs.my_position(),this.position);
+			this.possible_path = await calculate_path(beliefs,beliefs.my_position(),this.position);
 		}
 		
 		if(this.possible_path.length === 0) return false;
@@ -95,10 +119,10 @@ export default class BringTo extends Intention{
 	}
 	
 	description() {
-		return this.constructor.name + " ally " + this.ally_id + " parcels [" + this.parcels_id.join(", ") + "]";
+		return this.constructor.name + " ally " + this.ally + " parcels [" + this.parcels_id.join(", ") + "]";
 	}
 	
 	hash() {
-		return this.constructor.name + "_" + this.ally_id + "_" + this.parcels_id.join("_");
+		return this.constructor.name + "_" + this.ally + "_" + this.parcels_id.join("_");
 	}
 }

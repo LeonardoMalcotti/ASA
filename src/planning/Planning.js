@@ -11,6 +11,8 @@ import {PLANNING_LOG} from "../../config.js";
 import Shout from "../actions/Shout.js";
 import Ask from "../actions/Ask.js";
 import DiscoverAlly from "../intentions/DiscoverAlly.js";
+import BringTo from "../intentions/BringTo.js";
+import Say from "../actions/Say.js";
 
 /**
  *
@@ -52,9 +54,41 @@ export async function plan_simple(beliefs) {
 		plan.actions.push(new Shout({
 			topic : "Ally?",
 			cnt : undefined,
-			token : undefined,
-			msg_id : crypto.randomUUID()
+			token : undefined
 		}));
+	}
+	
+	if(intention instanceof BringTo){
+		if(PLANNING_LOG) console.log("plan_pddl : planning a bring to");
+		let start  = new Say(intention.ally,
+			{
+				topic: "WaitIn",
+				token: beliefs.communication_token,
+				cnt: {
+					waiting_position: intention.position
+				}
+			});
+		
+		let path = await calculate_path(beliefs,beliefs.my_position(),intention.position);
+		path.pop();
+		
+		let moving_actions = path_to_actions(beliefs.my_position(),path);
+		let put_down = new PutDown(intention.parcels_id);
+		path.reverse();
+		let go_back = path_to_actions(path[0].toPosition(), [path[0], path[1],path[2],path[3]]);
+		
+		let end  = new Say(intention.ally,
+			{
+				topic: "EndCollaboration",
+				token: beliefs.communication_token
+			});
+		
+		
+		plan.actions.push(start);
+		moving_actions.forEach((a) => plan.actions.push(a));
+		plan.actions.push(put_down);
+		go_back.forEach((a) => plan.actions.push(a));
+		plan.actions.push(end);
 	}
 	
 	return plan;

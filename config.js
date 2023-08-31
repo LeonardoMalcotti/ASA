@@ -14,6 +14,7 @@ export const GENERATION_LOG = true;
 export const EXECUTOR_LOG = true;
 export const PLANNING_LOG = true;
 export const ON_MESSAGE_LOG = true;
+export const ACTION_LOG = true;
 
 
 export const tokens = [
