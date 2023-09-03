@@ -120,8 +120,8 @@ export default async function plan_pddl_2(beliefs){
 			new PDDLCondition(goal)
 		);
 		
-		//if(PLANNING_LOG) console.log(domain.toPddlString());
-		//if(PLANNING_LOG) console.log(problem.toPddlString());
+		if(PLANNING_LOG) console.log(domain.toPddlString());
+		if(PLANNING_LOG) console.log(problem.toPddlString());
 		
 		let pddl_actions = await onlineSolver(
 			domain.toPddlString(),

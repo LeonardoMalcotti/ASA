@@ -12,7 +12,7 @@ export default class SimpleExecutor extends Executor{
 	 * @param {BeliefSet} beliefs
 	 */
 	constructor(client, beliefs) {
-		super(client, beliefs);
+		super(beliefs);
 		this.stopped = true;
 		this.to_be_executed = false;
 	}

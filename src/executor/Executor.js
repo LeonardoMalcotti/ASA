@@ -1,24 +1,17 @@
-import Plan from "../actions/Plan.js";
-
 export default class Executor {
-	/** @type {DeliverooApi} */
-	client;
 	/** @type {BeliefSet} */
 	beliefs;
 	/** @type {("failed" | "stopped" | "completed" | "executing" | "new")} */
 	status;
-	
 	/** @type {boolean} */
 	abort;
 	
 	/**
-	 * @param {DeliverooApi} client
 	 * @param {BeliefSet} beliefs
 	 */
-	constructor(client, beliefs) {
+	constructor(beliefs) {
 		this.beliefs = beliefs;
 		this.currentPlan = undefined;
-		this.client = client;
 		this.status = "stopped";
 		this.abort = false;
 	}

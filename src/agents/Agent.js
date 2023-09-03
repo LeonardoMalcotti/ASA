@@ -5,7 +5,6 @@ import ContinuousExecutor from "../executor/ContinuousExecutor.js";
 import Say from "../actions/Say.js";
 
 
-
 export default class Agent {
 	
 	/**@type {boolean} */
@@ -36,6 +35,7 @@ export default class Agent {
 	#deliberate;
 	/**@type {IntentionRevision} */
 	#intentionRevision;
+
 	/**@type {Planner} */
 	#planner;
 	/**@type {Executor} */
@@ -81,7 +81,7 @@ export default class Agent {
 		this.#deliberate = deliberate;
 		this.#intentionRevision = intentionRevision;
 		this.#planner = planner;
-		this.#executor = new ContinuousExecutor(this.#apiClient, this.#beliefSet);
+		this.#executor = new ContinuousExecutor(this.#beliefSet);
 		this.#started = false;
 		this.#abort = false;
 	}

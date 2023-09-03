@@ -1,12 +1,8 @@
 
 export default class Action {
+
 	
-	/** @type {boolean} */
-	optional;
-	
-	constructor() {
-		this.optional = false;
-	}
+	constructor() {}
 	
 	/**
 	 * @param {BeliefSet} beliefs

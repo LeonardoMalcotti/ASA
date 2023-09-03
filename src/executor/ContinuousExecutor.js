@@ -12,11 +12,10 @@ import {endCollaboration} from "../communications/CollaborationUtils.js";
 export default class ContinuousExecutor extends Executor{
 	
 	/**
-	 * @param {DeliverooApi} client
 	 * @param {BeliefSet} beliefs
 	 */
-	constructor(client, beliefs) {
-		super(client, beliefs);
+	constructor(beliefs) {
+		super(beliefs);
 	}
 
 	
