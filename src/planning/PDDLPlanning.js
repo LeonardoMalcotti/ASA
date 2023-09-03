@@ -19,6 +19,10 @@ import GoRight from "../actions/GoRight.js";
 import GoUp from "../actions/GoUp.js";
 import GoDown from "../actions/GoDown.js";
 import {PLANNING_LOG} from "../../config.js";
+import DiscoverAlly from "../intentions/DiscoverAlly.js";
+import Shout from "../actions/Shout.js";
+import BringTo from "../intentions/BringTo.js";
+import {plan_bring_to} from "./Planning.js";
 
 const tile1_var = new PDDLVariable("t1","tile");
 const tile2_var = new PDDLVariable("t2","tile");
@@ -197,7 +201,21 @@ export default async function plan_pddl(beliefs){
 		let path = await calculate_random_path(beliefs);
 		path_to_actions(beliefs.my_position(),path).forEach((a) => {plan.actions.push(a)});
 	}
-	
+
+	if(intention instanceof DiscoverAlly){
+		if(PLANNING_LOG) console.log("plan_pddl : planning a discover ally");
+		plan.actions.push(new Shout({
+			topic : "Ally?",
+			cnt : undefined,
+			token : undefined
+		}));
+	}
+
+	if(intention instanceof BringTo){
+		await plan_bring_to(beliefs,intention,plan);
+	}
+
+
 	return plan;
 }
 

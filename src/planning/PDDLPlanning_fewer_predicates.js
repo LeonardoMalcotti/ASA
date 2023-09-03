@@ -21,6 +21,8 @@ import GoDown from "../actions/GoDown.js";
 import {PLANNING_LOG} from "../../config.js";
 import DiscoverAlly from "../intentions/DiscoverAlly.js";
 import Shout from "../actions/Shout.js";
+import BringTo from "../intentions/BringTo.js";
+import {plan_bring_to} from "./Planning.js";
 
 const tile1_var = new PDDLVariable("t1","tile");
 const tile2_var = new PDDLVariable("t2","tile");
@@ -170,6 +172,10 @@ export default async function plan_pddl_2(beliefs){
 			cnt : undefined,
 			token : undefined
 		}));
+	}
+
+	if(intention instanceof BringTo){
+		await plan_bring_to(beliefs,intention,plan);
 	}
 	
 	return plan;
